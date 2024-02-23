@@ -1,0 +1,3789 @@
+LINUX NOTES
+
+DIRECTORIES
+
+From Linux Academy
+/ = "root" directory
+/bin = binaries or executable programs, these files are translated into binary for the machine to read, stores user commands 
+/sbin = system administration binaries, store system commands 
+/lib = hold library files used by programs in /bin and /sbin 
+/boot = contains files used for system startup including the kernel.
+/etc = system configuration files (files that can be config'd to open in text mode or graphical mode)
+/home = user home directory (/home/user or /home/Jon) separated data from users
+/initrd = is used to load required device modules and mount the initrd.img image file during system startup 
+/dev = contains device files
+/opt = optional or third party software can be found here, programs that are not bundled with the Linux OS(like Google Earth)
+/tmp = temporary directory, cleared on reboot. only for temporary files, all users have read+write access to tmp.
+/usr = contains files related to users such as application files and related library files ("usr" is an acronym that stands for UNIX system resources).
+/var = holds files and directories that are constantly changing such as printer spools and log files. variable data, most notably log files. holds things that change often like log data
+/mnt = used to mount external file systems
+/proc = provides info about running processes in the system, virtual directory (notactually stored on the disk) which holds system information required by certain programs 
+/selinux = used to display information about SELinux
+/srv = contains data which is served by the system
+/srv/www = web server files
+/srv/ftp = FTP files
+/sys = used to display and sometimes configure devices known to the Linux kernel
+
+ONLY /tmp IS READ+WRITE FOR ALL USERS. EVERY OTHER DIRECTORY NEEDS ROOT ACCESS 
+
+From Website
+    / is the root directory
+    /bin/ and /usr/bin/ store user commands.
+    /boot/ contains files used for system startup including the kernel.
+    /dev/ contains device files
+    /etc/ is where configuration files and directories are located.
+    /home/ is the default location for users‟ home directories.
+    /initrd/ is used to load required device modules and mount the initrd.img image file during system startup.
+    /lib/ and /usr/lib/ hold library files used by programs in /bin/ and /sbin/.
+    /lost+found/ holds orphaned files (files without names) found by fsck
+    /mnt/ holds the mount points for file systems that were mounted after boot.
+    /opt/ is used primarily for installation and unintallation of third-party software. Holds optional files and programs.
+    /proc/ is a virtual directory (not actually stored on the disk) which holds system information required by certain programs.
+    /root/ is the home directory of the superuser "root"
+    /sbin/ and /usr/sbin/ store system commands.
+    /tmp/ is the system temporary directory. All users have read+write access to /tmp/.
+    /usr/ contains files related to users such as application files and related library files ("usr" is an acronym that stands for UNIX system resources).
+    /var/ (as in "variable") holds files and directories that are constantly changing such as printer spools and log files.
+	
+
+Programs can be installed in /usr/local and /opt
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+BASIC LINUX COMMANDS
+
+ls - lists directory contents
+	-l = shows detailed list
+	-a = shows hidden files
+	-F = reveals file types
+		/ = directory
+		@ = link
+		* = executable
+	-t = list files by time
+	-r = sorted reverse order
+	-lat = multiple options selected, long listing files in reverse order sorted by time
+	-R = lists recursively
+	-d = lists only directory names, not contents
+tree - gives visual list output
+	-d = lists directories only
+	-C = colorize output
+cd - change directories
+pwd - displays file path (present working directory)
+cat - views files contents, concatenates and displays files
+echo - displays arguments to the screen
+man - displays the online manual
+exit - exits the shell or your current session
+clear - clears the screen
+mkdir [-p] directory - creates new directory
+rmdir [-p] directory - removes directory
+rm -rf directory - recursively removes directory
+
+
+echo $OLDPWD - shows the previous directory that you were in
+cd - = moves you back to the previous directory that you were in
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+PERMISSIONS
+
+w - write permission
+r - read permission
+x - executable permission
+
+u - user
+g - group
+o - other
+a - all
+
+id -Gn = reveals all groups user is a part of
+groups username = reveals username groups
+
+Example Decoder for Permissions
+
+-rw-r--r-- 1 bob users 10400 Sep 27 08:52 sales.data
+
+First character "-" is Type
+	- = regular file
+	d = directory
+	l = symbolic link
+
+Next set of RWX is permissions access for User
+Second set of RWX is permissions access for Group
+Third set of RWX is permissions access for Other
+Permissions not granted are replaced by a dash (-)
+
+chmod - Change mode command 
+ugoa - User category; user, group, other, all
++-= - add, subtract, or set permissions
+rwx - read, write, execute
+
+chmod ugoa+rwx filename shows -rwxrwxrwx filename
+chmod u=r filename shows -r--------
+
+r x w
+0 0 0 -- value for off
+1 1 1 -- binary value for on
+4 2 1 -- base10 value for on
+
+Octal Binary   String	  Description
+  0	 000	  ---	  No permissions
+  1	 001	  --x	  Execute only
+  2	 010 	  -w-	  Write only
+  3	 011 	  -wx	  Write and Execute (2+1)
+  4	 100 	  r--	  Read only
+  5	 101 	  r-x	  Read and execute (4+1)
+  6	 110	  rw-	  Read and Write (4+2)
+  7	 111	  rwx	  Read, write, and execute (4+2+1)
+
+Symbolic   Octal
+-rwx------ 700
+-rwxr-xr-x 755
+-rw-rw-r-- 664
+-rw-rw---- 660
+-rw-r--r-- 644
+
+Example: "chmod 755 filename" shows -rwxr-xr-x filename
+
+umask [-S] [mode]
+	-S = umask will display and accept symbolic notation
+	mode = works in opposite way of chmod
+umask 022 means that you are setting chmod 755 for directories and chmod 644 for files
+umask is displayed with four characters such as umask 0022 is the same as umask 022
+The first character is represented by special modes
+	- setuid
+	- setgid
+	- sticky
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+FIND FILES AND DIRECTORIES
+
+find [path...] [expression]
+
+Recursively finds files in path that match expression. If no arguments are supplied it finds all files in the current directory.
+
+Options:
+-name pattern   Finds files and directories that match pattern
+-iname pattern  Like -name, but ignores case
+-ls 		Performs an ls on each of the found items
+-mtime days   	Finds files that are days old.
+-size num 	Finds file that are of size num.
+-newer file	Finds files that are newer than file.
+-exec command {} \; run command against all the files that are found. it reveals what type of file it is
+
+A Fast Find Command
+
+locate pattern 
+	- Lists files that match pattern
+	- Faster than the find command
+	- Queries an index
+	- Results are not in real time
+	- May not be enabled on all systems
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+VIEWING AND EDITING FILES
+
+cat file 	Display the contents of file
+more file	Browse through a text file
+less file	More features than more
+head file	Output the beginning (or top) portion of file.
+tail file	Output the ending (or bottom) portion of file.
+  - Use this to follow the file. Displays data as it is being written to the file.
+
+Nano Editor is  simple editor. If nano isn't available, look for pico.
+
+VI Editor
+
+vi [file]	Edit file
+vim [file]	Same as vi, but more features
+view [file]	Starts vim in read-only mode
+
+VI Command Mode
+k		Up one line
+j		Down one line
+h		Left one character
+l		Right one character
+w		Right one word
+b		Left one word
+^		Go to the beginning of the line
+$		Go to the end of the line
+
+VI Insert Mode
+i		Insert at the cursor position
+I		Insert at the beginning of the line
+a		Append after the cursor position
+A		Append at the end of the line
+
+VI Line Mode
+:w		Writes (saves) the file
+:w!		Forces the file to be saved
+:q		Quit
+:q!		Quit without saving changes
+:wq!		Write and quit
+:x		same as :wq
+:n		Positions the cursor at line n
+:$		Positions the cursor on the last line
+:set nu		Turn on line numbering
+:set nonu	Turn off line numbering
+:help [subcmd]	Get help
+
+VI Modes
+Mode		Key
+Command		Esc
+Insert		i I a A
+Line		:
+
+VI Changing Text
+r		Replace the current character
+cw		Change the current word
+cc		Change the current line
+c$		Change the text from the current position
+C		Same as c$
+~		Reverses the case of a character
+
+VI Copying and Pasting
+yy		Yank (copy) the current line
+y<position>	Yank the <position>
+p		Paste the most recently deleted or yanked text
+
+VI Undo/Redo
+u		Undo
+Ctrl-R		Redo
+
+VI Searching
+/<pattern>	Start a forward search
+?<pattern>	Start a reverse search
+	Lowercase 'n' to move to the next search item
+	Uppercase 'N' to move to the previous search item
+
+EDITING WITH EMACS
+
+emacs [file] 		Edit file
+C-<char>		Ctrl while pressing <char>
+M-<char>		"Meta" key (alt key) while pressing <char> or press Esc, then type <char>
+
+EMACS Commands
+C-h			Help
+C-x C-c			Exit
+C-x C-s			Save the file
+C-h t			Built-in tutorial
+C-h k <key>		Describe key
+
+EMACS Navigation
+C-p			Previous line
+C-n			Next line
+C-b			Backward one character
+C-f			Forward one character
+M-f			Forward one word
+M-b			Backward one word
+C-a			Go to the beginning of the line
+C-e			Go to the end of the line
+M-<			Go to the beginning of the file
+M->			Go to the end of the file
+
+EMACS Deleting Text
+C-d			Delete a character
+M-d			Delete a word
+
+EMACS Copying Pasting and Undo
+C-k			Kill(cut)
+C-y			Yank(paste)
+C-x u			Undo
+
+EMACS Searching
+C-s			Start a forward search
+	Ctrl-S to move to next occurrence of that text. Press enter when done searching
+C-r			Start a reverse search
+	Ctrl-R to move to previous occurrence of that text. Press enter when done searching
+
+EMACS Repeating Commands
+C-u N <command>		Repeat <command> N times
+
+
+GRAPHICAL EDITORS
+
+emacs		Emacs has a graphical mode too
+gedit		The default text editor for Gnome
+gvim		The graphical version of vim
+kedit		The default text editor for the KDE
+AbiWord		Microsoft Word alternative
+LibreOffice	Full office suite
+Kate		Source code editor
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+DELETING COPYING MOVING AND RENAMING FILES
+
+rm file									Remove file
+rm -r dir								Remove the directory and its contents recursively
+rm -f file								Force removal and never prompt for confirmation
+cp source_file destination_file			Copy source_file to destination_file
+cp src_file1 [src_fileN...] dest_dir	Copy source_files to destination_directory
+cp -i									Run in interactive mode
+cp -r source_directory destination		copy src_directory recursively to destination
+mv <source> <destination>				Move or rename files and directories
+mv -i <source> <destination>			Interactive mode
+sort file								Sort text in file
+sort -k F file							Sort by key. F is the field number
+sort -r file							Sort in reverse order
+sort -u file							Sort unique
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+CREATING A CONNECTION OF FILES
+
+tar [-] c|x|t f tarfile [pattern]	Create, extract, or list contenst of a tar archive using pattern, if supplied
+
+tar Options
+c			Create a tar archive
+x			Extract files from the archive
+t			Display the table of contents (list)
+v			Be verbose
+z			Use compression
+f file		Use this file
+
+Compressing Files to Save Space
+gzip		Compress files
+gunzip		Uncompress files
+gzcat		Concatenates compressed files
+zcat		Copncatenates compressed files
+
+Disk Usage
+du			Estimates file usage
+du -k		Display sizes in Kilobytes
+du -h		Display sizes in human readable format
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+WILDCARDS
+
+A character or string used to match file and directory names.
+Globbing expands the wildcard pattern into a list of files and/or directories (paths)
+Wildcards can be used with most commands but most commonly
+	- ls
+	- rm
+	- cp
+	- mv
+
+The two main wildcards are '*' and '?'
+
+'*' = matches zero or more characters.
+	- *.txt
+	- a*
+	- a*.txt
+
+'?' = Matches exactly one character
+	- ?.txt
+	- a?
+	- a?.txt
+
+[] - A Character class
+	- Matches any of the characters included between the brackets. Matches exactly one character.
+	- [aeiou]
+	- ca[nt]*
+	   - can
+	   - cat
+	   - candy
+	   - catch
+
+[!] - Matches any of the characters NOT included between the brackets. Matches exactly one character
+	- [!aeiou]* (searching for a file that does NOT start with a vowel with '*' filling out the rest)
+	  - baseball
+	  - cricket
+
+Using character classes, you can use ranges.
+Use two characters separated by a hyphen to create a range in a character class.
+[a-g]* = Matches all files that start with a,b,c,d,e,f,or g.
+[3-6]* = Matches all files that start with 3,4,5, or 6.
+
+There are also Named Character Classes, most commonly used ranges
+[[:alpha:]] - matches alphabetic letters, both lower and uppercase letters
+[[:alnum:]] - matches alphanumeric characters, matches both lowercase and uppercase letters or any decimal digits
+[[:digit:]] - matches the numbers and decimal from 0 to 9
+[[:lower:]] - matches any lowercase letters
+[[:space:]] - matches any wide space, such as spaces, tabs, and newline characters
+[[:upper:]] - matches and uppercase letters
+
+To match a wildcard character, you need to use the escape character.
+'\' - escape character. This is needed to match a wildcard character like '*' or '?'
+	- For example, to match all files that end with a question mark: *\?
+
+**PRO TIP** BEFORE EXECUTING ANY WILDCARD COMMAND, USE ls WITH WILDCARDS TO SEE IF IT GRABS THE FILES YOU WANT!
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+INPUT/OUTPUT
+
+Three default types of Input/Output
+
+I/O Name		Abbreviation	File Descriptor
+Standard Input		stdin		0
+Standard Output		stdout		1
+Standard Error		stderr		2
+
+By default, standard input comes from the keyboard where standard output and standard error are displayed to the screen.
+
+You can redirect standard input from a file to a command, redirect standard output to a file.
+ > (greater than) = Redirects standard output to a file. This overwrites (truncating) existing contents.
+ >> (double greater than) = Redirects standard output to a file. Appends to any existing contents (adds on to file).
+ < (less than) = Redirects input from a file to a command.
+ & (ampersand) = Used with redirection to signal that a file descriptor is being used.
+ 	2>&1 = Combines standard error and standard output (instead of using 2>out.err)
+	2>file = Redirects standard error to a file.
+
+The null device is a special device that throws away whatever is fed to it, also known as a bit bucket. If you have an output but do not want to save it to a file, you can output it to dev/null
+
+>/dev/null = Redirect output to nowhere
+
+$ ls here not-here 2> /dev/null
+here
+$ ls here not-here > /dev/null 2>&1
+$
+
+Example: 
+For Output
+$ ls -l
+(gives you detailed list)
+$ ls -l > files.txt  #Re-directing ls -l output to the file "files.txt"
+$ ls >> files.txt #Appends regular ls output to the file "files.txt" so it includes both outputs from ls -l and ls
+
+For Input
+$ sort < files.txt #(inputs info from "files.txt" into the sort command to sort data)
+$ sort files.txt #This is the equivalent to the redirecting string above. 
+
+File descriptor 1 is is assumed for output redirection and file descriptor 2 is assumed for input redirection
+$ ls -l > files.txt is the same as $ ls -l 1> files.txt
+
+Input and Output redirection can be combined as well.
+$ sort < files.txt > sorted_files.txt  #This sorts the input from files.txt and outputs that sort into a new file called sorted_files.txt
+
+Standard Error, File descriptor 1 is for output while File descriptor 2 is for standard error
+$ ls files.txt not-here
+ls: cannot access not-here: No such file or directory		<----- This is considered standard error
+files.txt							<----- This is considered standard output
+$ ls files.txt not-here > out				<--- This is moving the standard output into the file "out"
+ls: cannot access not-here: No such file or directory   <--- Only showing standard error
+$ cat out						<--- When you "cat out" it shows the standard output
+files.txt
+$ ls files.txt not-here 2> out.err			<--- This moves the stderr to out.err as done by 2>
+files.txt
+$ cat out.err
+ls: cannot access not-here: No such file or directory
+$ ls files.txt not-here 1>out 2>out.err			<--- This is handy because you can move both stdout and stderr to two diff places
+$ cat out
+files.txt
+$ cat out.err
+ls: cannot access not-here: No such file or directory
+$ ls files.txt not-here > out.both 2>&1
+$ cat out.both
+ls: cannot access not-here: No such file or directory
+files.txt
+$ ls files.txt not-here 2>/dev/null			<--- This moves stderr to dev null
+files.txt
+$ ls files.txt not-here >/dev/null			<--- This moves stdout to dev null
+ls: cannot access not-here: No such file or directory
+$ ls files.txt not-here >/dev/null 2>&1			<--- Moving both stdout and stderr to dev null
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+COMPARING FILES
+diff file1 file2 = Compare two files
+sdiff file1 file2 = side-by-side comparison
+vimdiff file1 file2 = Highlight differences in vim
+
+$ diff file1 file2
+3c3
+...
+
+LineNumFile1-Action-LinenumFile2 (3c3)
+Action = (A)dd(C)hange(D)elete
+
+$ diff file1 file2
+3c3
+< this is a line in a file. < (less than is the line that is in file1)
+---
+> This is a Line in a File! > (greater than is the line that is in file2)
+
+$ sdiff file1 file2
+line in file1 | line in file2
+	      > more in file2
+|(pipe) = Differing lines
+< (less than) = Line from file1
+> (greater than) = Line from file2
+
+vimdiff Controls
+Ctrl-w w 	Go to next window
+:q 		Quit (close current window)
+:qa		(Quit all (close both files)
+:qa!		Force quit all
+
+Example:
+$ cat -n secret 	#-n is the option to show line numbers
+	1  tags: credentials
+	2  site: facebook.com
+	3  user: jason
+	4  pass: Abee!
+	5  tags: credentials
+$ cat -n secret.bak
+	1  tags: credentials
+	2  site: facebook.com
+	3  user: jason
+	4  pass: bee!
+	5  tags: credentials
+$ diff secret secret.bak
+4c4			<--- 4th line of file1 is different than the 4th line of file2
+< pass: Abee!
+---
+> pass: bee!
+$ sdiff secret secret.bak
+tags: credentials			tags: credentials
+site: facebook.com			site: facebook.com
+user: jason				user: jason
+pass: Abee!			      | pass: bee!		<--- This pipe '|' shows the line that has the difference
+tags: credentials			tags: credentials
+$ echo new last line >> secret 	<---adding a new line to the "secret" file. '>>' appending the file
+$ sdiff secret secret.bak
+tags: credentials			tags: credentials
+site: facebook.com			site: facebook.com
+user: jason				user: jason
+pass: Abee!			      | pass: bee!	<--- This pipe '|' shows the line that has the difference
+tags: credentials			tags: credentials
+new last line			      < 		<--- This '<' shows that theres a line in file1 that is not there in file2
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+SEARCHING IN FILES
+grep = Displays lines matching a pattern
+
+grep pattern file
+
+grep Options:
+-i = Perform a search, ignoring case
+-c = Count the number of occurrences in a file
+-n = Precede output with line numbers
+-v = Invert Match. Print lines that don't match the search pattern
+
+Example:
+$ cat secret
+tags: credentials
+site: facebook.com
+user: jason
+pass: Abee!
+tags: credentials
+new last line
+$ grep user secret
+user: jason
+$ grep o secret
+site: facebook.com
+user: jason
+$ grep -v o secret
+tags: credentials
+pass: Abee!
+tags: credentials
+new last line
+$ grep User secret		<--- This command is matching case. User is not identified as user.
+$ grep -i User secret
+user: jason
+$ grep -ci User secret		<--- Combining options together. This combines count and case-insensitive
+1				<--- Shows 1 instance of user in the file
+$ grep -ni user secret		<--- options for line number and case-insensitive
+3:user: jason
+
+The file Command
+file file_name = Displays the file type
+
+$ file sales.data
+sales.data: ASCII text
+$ file *
+bin: directory
+jason.tar: POSIX tar archive
+
+Searching for Text in Binary Files (Binary files are machine readable but not human readable)
+strings = Display printable strings
+
+| = Pipe symbol
+
+command-output | command-input 		<--- change two commands. Pipe takes the stdout of a cmd and passes it as the stdin of the following cmd
+
+grep pattern file
+cat file | grep pattern			<--- This cats the file and uses that output as the input for grep
+
+cut [file] = Cut out selected portions of file. If file is omitted, use standard input.
+	-d delimiter = Use delimiter as the field separator
+	-f N = Display the Nth field.
+
+Example:
+
+$ cd Music/jazz
+jazz$ ls
+giant-steps.mp3	  jazz-album-1.mp3   john-coletrane.mp3
+jazz$ grep -i john giant-steps.mp3
+Binary file giant-steps.mp3 matches
+jazz$ file giant-steps.mp3
+giant-steps.mp3: Audio file with ID3 version2.4.0, contains: MPEG ADTS, layer III, v1, 48kbps, 44.1 kHz, JntStereo
+jazz$ cat giant-steps.mp3
+@#$%@^^@#E$%Y^SDIOFLG
+@!#$%@#$%^
+jazz$ strings giant-steps.mp3
+lkij
+aslkdijf
+asfgriokjnr2
+42424
+jazz$ strings giant-steps.mp3 | grep -i john					<--- grepping john from the binary file
+John Coletrane
+TAG				John Coletrane
+jazz$ strings giant-steps.mp3 | grep -i john | head -1 				<--- This just grabs the the first one at the top of the file
+John Coletrane
+jazz$ strings giant-steps.mp3 | grep -i john | head -1 | cut -d' ' -f2		<--- Cuts john from output, prints the second field.
+Coletrane
+
+Searching and Pipe Example
+- Find all users named "bob" in /etc/passwd.
+- Print account name and real name.
+- Print in alphabetical order by account name.
+- Print in a tabular format.
+
+$ grep bob /etc/passwd							<---/etc/passwd is a file that keeps track of every registered user that has access to a system.
+bob:x:1000:1000:Bob Smith:/home/bob:/bin/bash
+bobdjr:x:1001:1000:Robert Downey:/home/bobdjr:/bin/bash
+bobh:x:1002:1000:Bob Hope:/home/bobh:/bin/bash
+bobs:x:1003:1000:Bob Saget:/home/bobs:/bin/bash
+bobd:x:1004:1000:Bob Dylan:/home/bobd:/bin/bash
+bobb:x:1005:1000:Bob Barker:/home/bobb:/bin/bash
+$ grep bob /etc/passwd | cut -d: -f1,5			<--- ':' is used as the delimiter, fields 1 and 5 are called
+bob:Bob Smith
+bobdjr:Robert Downey
+bobh:Bob Hope
+bobs:Bob Saget
+bobd:Bob Dylan
+bobb:Bob Barker
+$ grep bob /etc/passwd | cut -d: -f1,5 | sort	<--- sorting the output
+bobb:Bob Barker
+bob:Bob Smith
+bobd:Bob Dylan
+bobdjr:Robert Downey
+bobh:Bob Hope
+bobs:Bob Saget
+$ grep bob /etc/passwd | cut -d: -f1,5 | sort | tr ":" " " 	<--- tr is for translating a char, this changes the colon ":" to a space " "
+bobb Bob Barker
+bob Bob Smith
+bobd Bob Dylan
+bobdjr Robert Downey
+bobh Bob Hope
+bobs Bob Saget
+$ grep bob /etc/passwd | cut -d: -f1,5 | sort | tr ":" " " | column -t 		<--- Puts this into a table format
+bobb	Bob	Barker
+bob	Bob	Smith
+bobd	Bob	Dylan
+bobdjr	Robert	Downey
+bobh	Bob	Hope
+bobs	Bob	Saget
+
+Piping Output to a Pager
+
+Pipe output using the "more" or "less" commands
+
+Syntax:
+$ cat /etc/passwd | less  ---- same as less /etc/passwd
+$ grep bin /etc/passwd | less <--- helps when you can't use less on just a file. You can search and then use "less" to scroll
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+COPYING FILES OVER THE NETWORK
+
+SCP - Secure Copy
+SFTP - SSH File Transfer Protocol
+
+Linux and Mac come with SCP and SFTP
+Windows needs to use PuTTY Secure Copy client - pscp.exe or PuTTY Secure File Transfer client - psftp.exe
+
+Graphical SCP/SFTP Clients
+Cyberduck - Mac and Windows
+FileZilla - Mac, Windows, and Linux
+WinSCP - Windows Only (SCP/SFTP Client)
+
+Use SFTP to examine local files and remote files
+With SCP you need to know what files you want to transfer before issuing the command
+
+scp source destination - Copy source to destination
+sftp host - Start a secure file transfer session with host (sftp jason@host)
+
+FTP - File Transfer Protocol
+ftp host - Tranfer file to host
+This is not secure. Files are not encrypted
+FTP is built in command line utility for Mac and Linux
+Use WinSCP for Windows
+
+$ sftp linuxsvr
+jason@192.168.122.60's password: (enter password)
+Connected to linuxsvr.
+sftp> pwd
+Remote working directory: /home/jason
+sftp> lpwd						<--- "L" in front of pwd shows local path working directory
+Local working directory: /tmp/test
+sftp> lls						<--- "L" in from of ls shows local ls
+z.txt
+sftp> put z.txt 
+Uploading z.txt to /home/jason/z.txt
+z.txt					100%   14    0.0KB/s   00:00
+sftp> quit
+$ scp z.txt linuxsvr:/tmp/				<--- scp sourcefile destination (host destination with ':' to type path directory)
+jason@192.168.122.60's password: (Enter Password)
+z.txt					100%   14    0.0KB/s   00:00
+$ scp z.txt linuxsvr:~/
+jason@192.168.122.60's password: (Enter Password)
+z.txt					100%   14    0.0KB/s   00:00
+$ scp z.txt adminuser@linuxsvr:/home/adminuser/
+adminuser@192.168.122.60's password: (Enter Password)
+z.txt					100%   14    0.0KB/s   00:00
+$ sftp adminuser@linuxsvr
+adminuser@192.168.122.60's password: (Enter Password)
+sftp> ls
+z.txt
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+CUSTOMIZING THE SHELL PROMPT
+
+Use environment variable to customize
+Bash, ksh, and sh use $PS1
+Csh, tcsh, and zsh use $prompt
+
+Customizing Prompt with $PS1
+\d - Date in "Weekday Month Date" format (Tue May 26)
+\h - Hostname up to the first period
+\H - Hostname
+\n - Newline
+\t - Current time in 24-hour HH:MM:SS format
+\T - Current time in 12-hour HH:MM:SS format
+\@ - Current time in 12-hour am/pm format
+\A - Current time in 24-hour HH:MM format
+\u - Username of the current user
+\w - Current working directory
+\W - Basename of the current working directory instead of the full path
+\$ - Will show the status of the user (normal user displays $, super user displays #)
+
+To Persist PS1 Changes
+
+$ echo 'export PS1="[\u@\h \w]\$ " ' >> ~/.bash_profile
+
+EXAMPLE
+[jason@linuxsvr ~]$ echo $PS1
+[\u@\h \W]\$
+[jason@linuxsvr ~]$ PS1="\u@\h \$ "
+jason@linuxsvr $ PS1="<\t \u@\h \w>\$ "
+<09:23:27 jason@linuxsvr ~>$ pwd
+/home/jason
+<09:23:32 jason@linuxsvr ~>$ cd /var/log
+<09:23:37 jason@linuxsvr /var/log>$ PS1="\d \t \h \W>\$ "
+Sun Feb 23 09:23:49 linuxsvr log>$ pwd
+/var/log
+Sun Feb 23 09:23:49 linuxsvr log>$ 
+
+Edit the /.bash_profile using vi you would have to use
+export PS1="[persist \u@\h \w]\$ "
+[persist jason@linuxsvr ~]$ 
+
+Multi-line bash prompt is 
+$ PS1="\t\n[\h \w]\$ "
+09:25:06
+[linuxsvr ~]$ 
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+USING ALIASES
+Shortcuts
+Use for long commands
+Use for commands you type often
+
+alias [name[=value]]
+
+Fix Typos
+	$ alias grpe='grep'
+Make Linux Behave like another OS
+	$ alias cls='clear'
+
+Removing Aliases
+unalias name - Remove the "name" alias
+unalias -a - Removes all aliases 
+
+Persisting Aliases
+Add the aliases to your personal initialization files
+.bash_profile
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+ENVIRONMENT VARIABLES
+
+Name/Value Pairs
+Can change how an application behaves
+An Example Environment Variable:
+	- EDITOR=nano
+
+Viewing Environment Variables
+$ printenv			<---Informational environment variable
+HOSTNAME=web01
+TERM=xterm
+SHELL=/bin/bash
+HISTSIZE=1000
+USER=jason
+MAIL=/var/spool/mail/vagrant
+PATH=/usr/bin:/usr/sbin:/sbin:/usr/sbin
+PWD=/home/jason
+HOME=/home/jason
+
+Environment variables are case sensitive
+Environment variables are uppercase by convention, rarely see lowercase variables
+
+$ printenv HOME
+/home/jason
+$ printenv home
+$
+
+$ echo $HOME
+/home/jason
+$ echo $home
+$
+
+Creating Environment Variables
+Syntax:
+export VAR="value"
+
+Example:
+export EDITOR="vi"
+export TZ="US/Pacific"
+
+Removing Environment Variables
+Syntax:
+unset VAR
+
+Example:
+unset TZ
+
+Persisting Environment Variables
+Edit the environment variables in the ~/.bash_profile
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+PROCESSES AND JOB CONTROL
+
+ps - Display process status
+	-e = Everything, all processes
+	-f = Full format listing
+	-u username = Display username's processes
+	-p pid = Display information for PID
+
+ps -e = Display all processes
+ps -ef = Display all processes, full
+ps -eH = Display a process tree
+ps -e --forest = Display a process tree
+ps -u username = Display user's processes
+
+pstree = Display processes in a tree format
+top = Interactive process viewer
+htop = Interactive process viewer (less common than top)
+
+Background and Foreground Processes
+
+command & - Start command in background
+Ctrl+c - Kill the foreground process
+Ctrl+z - Suspend the foreground process (not running in background, fully stopped)
+bg [%num] - Background a suspended process
+fg [%num] - Foreground a background process
+kill jobnumber/PID - Kill a process by a jobnumber or PID
+jobs [%num] - List jobs
+
+Killing Processes
+
+Ctrl+c = Kills the foreground process
+kill [-sig] pid = Send a signal to a process
+kill -l = Display a list of signals
+
+kill 123 		<---Default SIG is 15(SIGTERM). kill 123 is the same as kill -15 123 
+kill -15 123
+kill -TERM 123
+kill -9 123
+
+Example:
+
+$ ./long-running-program &
+[1] 2373				<--- [1] is the job number (can be referenced by preceding it with a %) 2373 is the PID
+$ ps -p 2373
+ PID  TTY	TIME  CMD
+2373  pts/0  00:00:00 long-running-pr
+$ jobs
+[1]+ Running 			./long-running-program &
+$ jobs %1
+[1]+ Running			./long-running-program &
+$ fg
+./long-running program
+^C								<--- Ctrl+C
+$jobs
+$ ./long-running-program &
+[1] 2379
+$ ./long-running-program &
+[2] 2381
+$ ./long-running-program &
+[3] 2383
+$ ./long-running-program &
+[4] 2385
+$ jobs
+[1]	Running			./long-running-program &
+[2]	Running			./long-running-program &
+[3]-	Running			./long-running-program &
+[4]+	Running			./long-running-program &	<-- '+' represents the current job, '-' represents the previous job
+$ %% %+ %-^C		<---%% and %+ both refers to current job, %- refers to previous job
+$ jobs %+
+[4]+ Running			./long-running-program &
+$ jobs %-
+[3]- Running			./long-running-program &
+$ fg %2
+./long-running-program
+^C		<---Killed using Ctrl+C
+$
+$ jobs
+[1]	Running			./long-running-program &
+[3]-	Running			./long-running-program &
+[4]+	Running			./long-running-program &
+$ fg 1
+./long-running-program
+^Z		<---Suspended using Ctrl+Z
+[1]+	Stopped			./long-running-program &
+$ jobs
+[1]+	Stopped			./long-running-program 
+[3]	Running			./long-running-program &
+[4]-	Running			./long-running-program &
+$ bg %1
+[1]+	./long-running-program &
+$ jobs
+[1]	Running			./long-running-program &
+[3]-	Running			./long-running-program &
+[4]+	Running			./long-running-program &
+$ kill %1
+$
+[1] 	Terminated		./long-running-program &
+$ jobs
+[3]-	Running			./long-running-program &
+[4]+	Running			./long-running-program &
+$ %3
+./long-running-program
+^C
+$ jobs
+[4]+	Running			./long-running-program &
+$ fg
+./long-running-program
+^C
+$ jobs
+$
+
+Killing Processes
+
+$ kill -l
+(Lists all options for sig, theres 64 options. Too many to type. Important one is 9-SIGKILL and 15-SIGTERM)
+$ kill -KILL ^C
+$ ./long-running-program &
+[1] 2394
+$ ./long-running-program &
+[2] 2396
+$ kill 2394
+$ jobs
+[1]- 	Terminated			./long-running-program
+[2]+	Running				./long-running-program &
+$ jobs
+[2]+	Running				./long-running-program &
+$ kill -9 2396
+$ jobs
+[2]+	Killed				./long-running-program &
+$
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+SCHEDULING REPEATED JOBS WITH CRON
+
+Cron
+
+cron - A time based job scheduling service
+crontab - A program to create, read, update, and delete your job schedules
+Use cron to schedule and automate tasks
+
+CronTab Format
+
+* * * * * command
+| | | | |
+| | | | +-- Day of the Week (0-6)
+| | | +---- Month of the Year (1-12)
+| | +------ Day of the Month (1-31)
+| +-------- Hour (0-23)
++---------- Minute (0-59)
+
+Examples
+
+# Run every Monday at 07:00
+0 7 * * 1 /opt/sales/bin/weekly-report
+
+# Run at 02:00 every day and send output to a log file
+0 2 * * * /root/backupdb > /tmp/db.log 2>&1
+
+# Run every 30 minutes
+0,30 * * * * /opt/acme/bin/half-hour-check
+# Another way to do the same thing.
+*/2 * * * * /opt/acme/bin/half-hour-check
+# Run for the first 5 minutes of the hour
+0-4 * * * * /opt/acme/bin/first-five-mins
+
+Crontab Shortcucts
+@yearly		0 0 1 1 *
+@annually	0 0 1 1 *
+@monthly	0 0 1 * *
+@weekly		0 0 * * 0
+@daily		0 0 * * *
+@midnight	0 0 * * *
+@hourly		0 * * * *
+
+crontab file = Install a new crontab from file
+crontab -l = List your cron jobs
+crontab -e = Edit your cron jobs
+crontab -r = Remove all of your cron jobs
+
+Example:
+$ crontab -l
+no crontab for jason
+$ vi my-cron
+# Run every Monday at 07:00
+0 7 * * 1 /opt/sales/bin/weekly-report
+
+$ cat my-cron
+# Run every Monday at 07:00
+0 7 * * 1 /opt/sales/bin/weekly-report
+$ crontab my-cron
+crontab -l
+# Run every Monday at 07:00
+0 7 * * 1 /opt/dales/bin/weekly-report <--- You can edit and disable this job by commenting it out with #
+$ echo $EDITOR
+
+$ EDITOR=vi
+$ crontab -e 	<---lets you edit the crontab jobs
+crontab: installing new crontab
+$ crontab -r
+$ crontab -l
+no crontab for jason
+$
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+SWITCHING USERS AND RUNNING COMMANDS AS OTHERS
+
+su [username] - Change user ID or become superuser
+	- = A hyphen is used to provide an environment similar to what the user would expect had the user logged in directly.
+	-c = Specify a command to be executed
+whoami - Displays the effective username
+$ whoami
+jason
+$ su oracle
+password:
+$ whoami
+oracle
+$
+
+Example:
+
+jason~$ export TEST=1
+jason~$ echo $TEST
+1
+jason~$ su oracle
+Password:
+oracle~$ echo $TEST
+1
+oracle~$ whoami
+oracle
+oracle~$ exit
+exit
+jason~$ su - oracle
+Password:
+oracle~$ echo $TEST
+
+oracle~$ pwd
+/home/oracle
+oracle~$ exit
+logout
+jason~$ su -c 'echo $ORACLE_HOME' oracle
+Password:
+
+jason~$ su -c 'echo $ORACLE_HOME' - oracle
+Password:
+/u01/app/oracle/product/current
+jason~$ 
+
+Sudo - Super User Do
+
+sudo - Execute a command as another user, typically the superuser
+sudo -l 		= List available commands
+sudo command 		= Run command as root
+sudo -u root command 	= Same as above
+sudo -u user command 	= Run as specificed user
+sudo su 		= Switch to the superuser account
+sudo su - 		= Switch to the superuser account with root's environment
+sudo su - username 	= Switch to the username account
+sudo -s 		= Start a shell
+sudo -u root -s		= Same as sudo -s
+sudo -u user -s		= Start a shell as user
+
+Changing the sudo Configuration
+
+visudo 			= Edit the /etc/sudoers file   **Needs root priviliges 
+
+Sudoers Format
+
+user host=(users)[NOPASSWD:]commands
+
+adminuser ALL=(ALL)NOPASSWD:ALL
+jason linuxsvr=(root)/etc/init.d/oracle
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+SHELL HISTORY AND AUTOCOMPLETION
+
+Executed commands are added to the history
+Shell history can be displayed and recalled
+Shell history is stored in memory and on disk
+	~/.bash_history
+	~/.history
+	~/.histfile
+
+history 	= Displays the shell history
+HISTSIZE	= Controls the number of commands to retain in history
+export HISTSIZE=1000  (to change the number of commands that are stored, this can be imported into the bash file for saving)
+
+! Syntax
+
+! 		= is also called "bang" 
+!N 		= Repeat command line number N
+!! 		= Repeat the previous command line
+!string		= Repeat the most recent command starting with "string"
+!:N 		= <Event> <Separator> <Word>
+! 		= Represents a command line (or event)
+			! = The most recent command line
+			! = !!
+:N		= Represents a word on the command line
+			0 = command, 1 = first argument, etc.
+
+Example: 
+
+$ head files.txt sorted_files.txt notes.txt
+<Output from head command here>
+$ !!
+head files.txt sorted_files.txt notes.txt
+<Output from head command here>
+$ vi !:2
+vi sorted_files.txt
+<vi editor starts>
+
+!^ 		= Represents the first argument
+			!^ = !:1
+!$		= Represents the last argument
+
+$ head files.txt sorted_files.txt notes.txt
+!^ = files.txt
+!$ = notes.txt
+
+Searching Shell History
+
+Ctrl+r		= Reverse shell history search
+Enter 		= Execute the command
+Arrows 		= Change the command
+Ctrl+g		= Cancel the search
+
+Tab Completion
+
+Tab 		= Autocompletion
+	- Commands
+	- Files, directories, paths
+	- Environment Variables
+	- Usernames (~)
+
+Example:
+$ history
+  1 history
+$ !1
+history
+  1 history
+$ echo $HISTSIZE
+1000
+$ !!
+echo $HISTSIZE
+1000
+$ !h
+history
+  1 history
+  2 echo $HISTSIZE
+  3 history
+$ !2
+echo $HISTSIZE
+1000
+$ ls files.txt sorted_files.txt notes.txt
+files.txt notes.txt sorted_files.txt
+$ !!
+ls files.txt sorted_files.txt notes.txt
+files.txt notes.txt sorted_files.txt
+$ echo !:2
+echo sorted_files.txt
+sorted_files.txt
+$ !l
+ls files.txt sorted_files.txt notes.txt
+files.txt notes.txt sorted_files.txt
+$ echo !$
+echo notes.txt
+notes.txt
+$ echo !^
+echo files.txt
+files.txt
+$ echo alpha bravo charlie
+alpha bravo charlie
+$ echo !^ !l:2 delta !l:0
+echo alpha sorted_files.txt delta ls
+alpha sorted_files.txt delta ls
+$
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+INSTALLING AND MANAGING SOFTWARE
+
+- Packages
+- Package Managers
+- Managing software for RPM based Distros
+- Managing software for DEB based Distros
+
+Package
+- A collection of files
+- Data/Metadata
+	- Package description
+	- Version
+	- Dependencies
+
+Package Manager
+- Installs, upgrades, and removes packages
+- Manages dependencies
+- Keeps track of what is installed
+
+Installing Software on RPM(Red Hat Package Manager) Distros
+- RedHat
+- CentOS
+- Fedora
+- Oracle Linux
+- Scientific Linux
+
+yum search string 		= Search for string
+yum info [package]		= Display info
+yum install -y [package]	= Install package
+yum remove package		= Remove package
+
+rpm -qa				= List all installed packages
+rpm -qf /path/to/file		= List the file's package
+rpm -ql package			= List package's files
+rpm -ivh package.rpm		= Install package
+rpm -e package 			= Erase (uninstall) package
+
+Installing Software on DEB Distros
+- DEB
+- LinuxMint
+- Ubuntu
+
+APT (Advanced Packaging Tool)
+
+apt-cache search string		= Search for string
+apt-get install [-y] package	= Install package
+apt-get remove package 		= Remove package, leaving configuration
+apt-get purge package 		= Remove package, deleting configuration
+apt-cache show package		= Display information about package
+dpkg -l				= List installed packages
+dpkg -S /path/to/file		= List file's package
+dpkg -L package			= List all files in package
+dpkg -i package.deb		= Install package
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+THE LINUX BOOT PROCESS
+BIOS
+Boot loaders
+Linux Kernels
+Run Levels
+
+BIOS - Basic Input/Output System
+Special firmware
+Operating System independent
+Primary purpose is to find and execute the boot loader
+Performs the POST (Power-On Self Test)
+Knows about bootable devices
+	- Hard Drives
+	- USB Drives
+	- DVD Drives
+	- etc.
+The boot device order can be changed
+
+LILO
+- Linux Loader
+GRUB
+- Grand Unified Bootloader
+- Replaced LILO
+Boot loaderss start the operating system
+boot loaders can start the OS with different options
+
+initrd
+- Initial RAM disk
+Temporary filesystem that is loaded from disk and stored in memory
+Contains helpers and modules required to load the permanent OS file system
+
+/boot
+- Contains the files required to boot Linux
+- initrd
+- kernel
+- boot loader configuration
+
+$ ls -F /boot
+abi-3.13.0-46-generic		initrd.img-3.13.0-46-generic
+config-3.13.0-46-generic 	System.map-3.13.0-46-generic
+grub/				vmlinuz-3.13.0-46-generic
+
+Kernel Ring Buffer
+- Contains messages from the Linux kernel
+- dmesg
+- /var/log/dmesg
+
+Runlevels/Descriptions
+0		Shuts down the system
+1,S,s		Single user mode. Used for maintenance
+2		Multi-user mode with graphical interface. (Debian/Ubuntu)
+3		Multi-user text mode (RedHat/CentOS)
+4		Undefined
+5		Multi-user mode with graphical interface (RedHat/CentOS)
+6		Reboot
+
+Init
+/etc/inittab:
+id:3:initdefault:
+Being phased out by systemd
+
+Systemd
+Uses targets instead of runlevels
+# cd
+/lib/systemd/system
+# ls -l runlevel5.target
+lrwxrwxrwx. 1 root root 16 Jul 17 2014
+runlevel5.target -> graphical.target
+# systemctl set-default graphical.target
+
+Changing Runlevels or Targets
+
+telinit RUNLEVEL
+- telinit 5
+systemctl isolate TARGET
+- systemctl isolate graphical.target
+
+Rebooting
+# telinit 6
+# systemctl isolate reboot.target
+# reboot
+
+shutdown [options] time [message]
+
+# shutdown -r 15:30 "rebooting!"
+# shutdown -r +5 "rebooting soon!"
+# shutdown -r now
+
+Power Off
+# telinit 0
+# systemctl isolate poweroff.target
+# poweroff
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+SYSTEM LOGGING
+- The syslog standard
+- Facilities and Severities
+- Syslog Servers
+- Logging Rules
+- Where logs are stored
+- How to generate your own log messages
+- Rotating log files
+
+Syslog Standard
+- Aids in the processing of messages
+- Allows logging to be centrally controlled
+- Uses facilities and severities to categorize messages
+
+Number 	Keyword	   	Description
+0	kern		kernel messages
+1	user		user-level messages
+2	mail		mail system
+3	daemon		system daemons
+4	auth		security/authorization messages
+5	syslog		messages generated by syslogd
+6	lpr		line printer subsystem
+7	news		network news subsystem
+8	uucp		UUCP subsystem
+9	clock		daemon
+10	authpriv	security/authorization messages
+11	ftp		FTP daemon
+12	-		NTP subsystem
+13	-		log audit
+14	-		log alert
+15	cron		clock daemon
+16	local0		local use 0 (local0)
+17	local1		local use 1 (local1)
+18	local2		local use 2 (local2)
+19	local3		local use 3 (local3)
+...
+23	local7		local use 7 (local7)
+
+Code	Severity	Keyword		Description
+0	Emergency	emerg (panic)	System is unusable
+1	Alert		alert		Action must be taken immediately
+2	Critical	crit		Critical conditions
+3	Error		err (error)	Error conditions
+4	Warning		warning (warn)	Warning Conditions
+5	Notice		notice		Normal but significant condition
+6	Info		info		Infomational messages
+7	Debug		debug		Debug-level messages
+
+Syslog Servers
+- Process syslog messages based on rules
+- syslogd
+- rsyslog
+	- /etc/rsyslog.conf:
+	- $IncludeConfig /etc/rsyslog.d/*.conf
+- syslog-ng
+
+Logging Rules
+Selector Field
+- FACILITY.SEVERITY
+- mail.*
+- mail
+- FACILITY.none
+- FACILITY_1.SEVERITY; FACILITY_2.SEVERITY
+Action Field
+- Determines how a message is processed
+
+Caching vs. Non-Caching
+- Caching is used if the path starts with a hyphen
+mail.info	-/var/log/mail.info
+- You may lose some messages during a system crash if you are using caching mode
+- Using caching mode can improve I/O performance
+
+mail.info	-/var/log/mail.info
+mail.warn	-/var/log/mail.warn
+mail.err	/var/log/mail.err
+
+auth,authpriv.*			/var/log/auth.log
+*.*;auth.none,authpriv.none	-/var/log/syslog
+
+*.info;mail.none;authpriv.none;cron.none 	/var/log/messages
+
+Logger
+logger [options] message
+	-p FACILITY.SEVERITY
+	-t TAG
+$ logger -p mail.info -t mailtest "Test."
+$ sudo tail -1 /var/log/mail.log
+Apr 4 14:33:16 linuxsvr mailtest: Test.
+
+Logrotate
+/etc/logrotate.conf:
+include /etc/logrotate.d
+
+Example logrotate.conf
+weekly
+rotate 4
+create
+compressed
+include /etc/logrotate.d
+
+/var/log/debug
+/var/log/messages
+{
+	rotate 4			<-- rotate by times before removing
+	weekly				<-- rotate logfiles weekly
+	missingok			<-- ignore missing log files
+	notifempty			<-- not rotate log files if empty
+	compress			<-- compress rotated log files
+	sharedscripts			
+	postrotate			<-- lines in between postrotate and endscript are executed after files are rotated
+		reload rsyslog >/dev/null 2>&1 || true
+	endscript
+}
+
+Test the Logrotate Configuration
+# logrotate -fv /etc/logrotate.conf	<-- '-f' option tells logrotate to force a rotation where '-v' enables verbose logging.
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+DISK MANAGEMENT
+
+Partitions
+MBR
+GPT
+Mount Points
+fdisk
+
+Partitions
+- Disks can be divided into parts, called partitions
+- Partitions allow you to separate data
+- Partioning schemes
+	- 1) OS, 2) Application, 3) User, 4) Swap
+	- 1) OS, 2) User home directories
+	- As a system administrator, you decide
+- Can protect the overall system
+- Keep users from creating outages by using a home directory partition
+$ df -h (df=disk filesystem)
+Filesystem  Size  Used  Avail  Use%  Mounted on
+/dev/sda2   100G   75G   25G    75%  /
+/dev/sda1   488M  111M  342M    25%  /boot
+/dev/sda3    10G   10G     0   100%  /home
+
+MBR
+Master Boot Record
+- Can only address 2TB of disk space
+- Being phased out by GPT
+	- GPT=GUID Partition Table
+- 4 Primary Partitions
+- Extended partitions allow you to create logical partitions
+
+GPT
+- GPT=GUID Partition Table
+- GUID=Global Unique Identifier
+- Replacing the MBR partioning scheme
+- Part of UEFI
+- UEFI = Unified Extensible Firmware Interface
+- UEFI is replacing BIOS
+- Supports up to 128 partitions
+- Supports up to 9.4 ZB (zetabytes) disk sizes
+- Not supported by older operating systems
+- May require newer or special tools
+
+Mount Points
+- A directory used to access the data on a partition
+- /(slash) is always a mount point
+- /home
+   - /home/jason is on the partition mounted on /home
+- /export/home
+   - /export/home/jason
+Mounting over existing data
+mkdir /home/sarah
+mount /dev/sdb2 /home
+*You will not be aable to see /home/sarah now
+umount /home
+*You can now see /home/sarah again
+You can mount anywhere in the linux tree
+
+fdisk
+- Alternatives: gdisk, parted
+- Earlier versions of fdisk did not support GPT
+fdisk /path/to/device
+
+Example:
+# fdisk -l | less (to list all devices)
+# fdisk /dev/sdb
+Theres a menu for fdisk so theres guidance there.
+
+FILE SYSTEMS
+Creating file systems
+Mounting file systems
+Unmount file systems
+How to prepare swap space for use
+File System Table
+Disk UUIDs and Labels
+
+File System
+- ext=Extended File System
+  - ext2, ext3, ext4 are later releases
+  - Often the default file system type
+- Other file systems:
+  - ReiserFS
+  - JFS
+  - XFS
+  - ZFS
+  - Btrfs
+To create a file system use the mkfs command
+mkfs -t TYPE DEVICE
+mkfs -t ext3 /dev/sdb2
+mkfs -t ext4 /dev/sdb3
+mkfs.ext4 /dev/sdb3
+
+# ls -l /sbin/mkfs*
+/sbin/mkfs
+/sbin/mkfs.btrfs
+/sbin/mkfs.cramfs
+/sbin/mkfs.ext2
+/sbin/mkfs.ext3
+/sbin/mkfs.ext4
+/sbin/mkfs.minix
+/sbin/mkfs.xfs
+
+Mounting with mount
+mount DEVICE MOUNT_POINT
+mount /dev/sdb3 /opt
+
+# mount
+proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+sysfs on /sys type sysfs (rw,nosuid,nodev,noexec,relatime)
+tmpfs on /dev/shm type tmpfs (rw,nosuid,nodev)
+tmpfs on /run type tmpfs (rw,nosuid,nodev,mode=755)
+...
+/dev/sda2 on / type xfs (rw,relatime,attr2,inode64,noquota)
+/dev/sdb3 on /opt type ext4 (rw,relatime,data=ordered)
+
+# df -h
+Filesystem	Size  Used  Avail  Use%  Mounted on
+/dev/sda2	198G  1.7G  196G     1%  /
+devtmpfs	489M     0  489M     0%  /dev
+tmpfs		497M     0  497M     0%  /dev/shm
+tmpfs		497M  6.5M  491M     2%  /run
+tmpfs		497M     0  497M     0%  /sys/fs/cgroup
+/dev/sdb3	484G   73M  459G     1%  /opt
+#
+
+Manual mounts do not persist
+In order to make mounts persist between reboots, add an entry in the /etc/fstab file
+
+Unmount with the umount cmd
+umount DEVICE_OR_MOUNT_POINT
+
+umount /opt
+umount /dev/sdb3
+
+Preparing Swap Space
+# mkswap /dev/sdb1
+Setting up swapspace version1, size = 1048572 KiB
+no label, UUID=619dc6d9-1b0b-4a9a-9df5-bfc343fb8d6e
+# swapon /dev/sdb1
+# swapon -s
+Filename    Type	Size        Used       Priority
+/dev/sda1   partition   2047996     0		-1
+/dev/sdb1   partition   1048572     0		-2
+
+/etc/fstab - File System Table
+- Controls what devices get mounted and where on boot
+- Each entry is made up of 6 fields
+  - device
+  - mount point
+  - file system type
+  - mount options
+  - dump
+  - fsck order
+
+# device    mount  point  FS    options   dump   fsck
+/dev/sda2   /             xfs   defaults     0     1
+/dev/sda1   swap          swap  defaults     0     0
+
+UUID=dbae4fe7-b06f-4319-85dc-b93ba4a16b17 / xfs defaults 0 1
+LABEL=opt /opt		ext4	    defaults  1 1
+/dev/sda1 swap		swap        defaults   0      0
+
+Viewing Labels and UUIDs
+# lsblk -f
+ NAME    FSTYPE  LABEL UUID				     MOUNTPOINT
+sda
+|--sda1 swap		1cb76bec-a1fa-4ac6-8296-c508e936b744 [swap]
+|--sda2 xfs    root 	dbae4fe7-b06f-4319-85dc-b93ba4a16b17 /
+
+# blkid
+/dev/sda1: UUID="1cb76bec-a1fa-4ac6-8296-c508e936b744" TYPE="swap"
+/dev/sda2: LABEL="root" UUID="dbae4fe7-b06f-4319-85dc-b93ba4a16b17" TYPE="xfs"
+
+Labeling a File System
+# e2label /dev/sdb3 opt
+
+mkfs
+mount
+df
+umount
+mkswap
+swapon
+/etc/fstab
+viewing UUIDs and labels
+creating labels
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+LVM: LOGICAL VOLUME MANAGER
+
+Need to be root user to create anything.
+
+$ su -
+Password:
+# lvmdiskscan
+ /dev/sda1 [	10.00GiB]
+ /dev/sdb  [	50.00GiB]
+ /dev/sdc  [	50.00GiB]
+ /dev/sdd  [   100.00GiB]
+ /dev/sde  [   100.00GiB]
+ 4 disks
+ 1 partition
+ 0 LVM physical volume whole disks
+ 0 LVM physical volumes
+# lsblk
+NAME	MAJ:MIN  RM  SIZE RO TYPE MOUNTPOINT
+sda	  8:0	  0   10G  0 disk 
+ |-sda1   8:1	  0   10G  0 part /
+sdb       8:16	  0   50G  0 disk 
+sdc	  8:32	  0   50G  0 disk 
+sdd       8:48	  0  100G  0 disk 
+sde	  8:64	  0  100G  0 disk 
+# lsblk -p
+NAME		MAJ:MIN  RM  SIZE RO TYPE MOUNTPOINT
+/dev/sda	  8:0	  0   10G  0 disk 
+ |-/dev/sda1      8:1	  0   10G  0 part /
+/dev/sdb          8:16	  0   50G  0 disk 
+/dev/sdc	  8:32	  0   50G  0 disk 
+/dev/sdd          8:48	  0  100G  0 disk 
+/dev/sde	  8:64	  0  100G  0 disk 
+# df -h
+Filesystem	Size  Used Avail Use% Mounted on
+udev		488M	 0  488M   0% /dev
+tmpfs		 99M  3.1M   96M   4% /run
+/dev/sda1	9.7G  998M  8.7G  11% /
+tmpfs		495M	 0  495M   0% /dev/shm
+tmpfs		5.0M	 0  5.0M   0% /run/lock
+tmpfs		495M	 0  495M   0% /sys/fs/cgroup
+tmpfs		 99M	 0   99M   0% /run/user/1001
+# fdisk -l
+(shows fdisk info/partitions/etc)
+# pvcreate /dev/sdb					<---Creating a physical volume
+  Physical volume "/dev/sdb" succesffuly created.
+# pvs							<---Viewing physical volumes
+  PV		VG Fmt  Attr PSize  PFree
+  /dev/sdb	   lvm2 ---  50.00g 50.00g
+# vgcreate cg_app /dev/sdb				<---Creating Volume Group
+  Volume group "vg_app" successfully created
+# vgs
+  VG	 #PV #LV #SN Attr    VSize  VFree
+  vg_app   1   0   0 wz--n-  50.00g 50.00g
+# pvs
+  PV		VG	Fmt  Attr PSize  PFree
+  /dev/sdb      vg_app  lvm2 a--  50.00g 50.00g
+# lvcreate -L 20G -n lv_data vg_app			<---Creating Logical Volume
+  Logical volume "lv_data" created
+# lvs							<---Viewing Logical Volumes
+  LV	  VG	 Attr	    LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv_data vg_app -wi-a----- 20.00g
+# lvdisplay						<---Provides different output
+  --- Logical volume ---
+  LV Path		 /dev/vg_app/lv_data
+  LV Name		 lv_data
+  VG Name		 vg_app
+  LV UUID		 IvMp7I-BER5-cfZN-Jbsf-g8Fy-gne3-WXISNn
+  LV Write Access	 read/write
+  LV Creation host, time linuxsvr, 2018-02-26 21:41:55 +0000
+  LV Status		 availabe
+  # open		 0
+  LV Size		 20.00 Gib
+  Current LE		 5120
+  Segments		 1
+  Allocation		 inherit
+  Read ahead sectors	 auto
+  - currently set to	 256
+  Block device		 253:0
+
+# mkfs -t ext4 /dev/vg_app/lv_data
+mke2fs 1.43.4 (31-Jan-2017)
+Creating filesystem with 5242880 4k blocks and 1310720 inodes
+Filesystem UUID: 362863db-7097-4e5c-8fcd-14d1d89091d3
+Superblock backups stored on blocks:
+	32768, 98304, 163840, 229376m 294912, 819200, 884736, 1605632, 2654208,
+	4096000
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+# mkdir /data
+# mount /dev/vg_app/lv_data /data
+# df -h /data
+Filesystem		    Size  Used Avail Use% Mounted on
+/dev/mapper/vg_app-lv_data   20G   45M   19G   1% /data
+# lvcreate -L 5G -n lv_app vp_app
+  Logical volume "lv_app" created
+# lvs
+  LV	  VG	 Attr	    LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv_app  vg_app -wi-a-----  5.00g
+  lv_data vg_app -wi-a----- 20.00g
+# mkfs -t ext4 /dev/vg_agg/lv_app
+(output similar to the previous mfks)
+# mkdir /app
+# vi /etc/fstab
+(edit fstab)
+/dev/vg_app/lv_app /app ext4 defaults 0 0
+
+# mount /app
+# df -h /app
+Filesystem		  Size  Used Avail Use% Mounted on
+/dev/mapper/vg_app-lv_app 4.9G   20M  4.6G   1% /app
+# df -h
+Filesystem		     Size  Used Avail Use% Mounted on
+udev			     488M     0  488M   0% /dev
+tmpfs		 	      99M  3.1M   96M   4% /run
+/dev/sda1		     9.7G  998M  8.7G  11% /
+tmpfs			     495M     0  495M   0% /dev/shm
+tmpfs			     5.0M     0  5.0M   0% /run/lock
+tmpfs			     495M     0  495M   0% /sys/fs/cgroup
+tmpfs			      99M     0   99M   0% /run/user/1001
+/dev/mapper/vg_app-lv_data    20G   45M   19G   1% /data
+/dev/mapper/vg_app-lv_app    4.9G   20M  4.6G   1% /app
+# ls -l /dev/vg_app/lv_app
+lrwxrwxrwx 1 root root 7 Feb 26 21:46 /dev/vg_app/lv_app -> ../dm-1
+# ls -l /dev/mapper/vg_app-lv_app
+lrwxrwxrwx 1 root root 7 Feb 26 21:46 /dev/mapper/vg_app-lv_app -> ../dm-1
+# ls -l /dev/dm-1
+brw-rw---- 1 root disk 253, 1 Feb 26 21:46 /dev/dm-1
+# lvdisplay
+(lvdisplay output)
+# vgs
+  VG	 #PV #LV #SN Attr    VSize  VFree
+  vg_app   1   2   0 wz--n-  50.00g 25.00g
+# lvcreate -L 25G -n lv_logs vg_app 			<---trying to create with the remaining
+  Volume group "vg_app" has insufficient free space (6399 extents): 6400 required
+# lvcreate --help 					<--- for help in creating LVs
+# lvcreate -l 100%FREE -n lv_logs vg_app (alternative: lvcreate -l 6399 -n lv_logs vg_app)
+  Logical volume "lv_logs" created.
+# lvs
+  LV	  VG	 Attr	    LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv_app  vg_app -wi-ao----  5.00g
+  lv_data vg_app -wi-ao---- 20.00g
+  lv_logs vg_app -wi-a----- 25.00g
+# lvmdiskscan 
+ /dev/vg_app/lv_data [	     20.00 GiB]
+ /dev/sda1	     [	     10.00 GiB]
+ /dev/vg_app/lv_app  [	      5.00 GiB]
+ /dev/vg_app/lv_logs [       25.00 GiB]
+ /dev/sdb  	     [	     50.00 GiB] LVM physical volume
+ /dev/sdc  	     [	     50.00 GiB]
+ /dev/sdd  	     [      100.00 GiB]
+ /dev/sde  	     [      100.00 GiB]
+ 5 disks
+ 1 partition
+ 2 LVM physical volume whole disks
+ 0 LVM physical volumes
+
+EXTENDING VG AND LV
+# pvcreate /dev/sdc						<---create new PV
+ Physical volume "/dev/sdc" successfully created.
+# vgextend vg_app /dev/sdc					<---extend VG to new PV
+ Volume group "vg_app" successfully extended
+# vgs
+  VG	 #PV #LV #SN Attr    VSize  VFree
+  vg_app   2   3   0 wz--n-  99.99g 50.00g
+# pvs
+  PV	     VG      Fmt  Attr PSize  PFree
+  /dev/sdb   vg_app  lvm2 a--  50.00g     0
+  /dev/sdc   vg_app  lvm2 a--  50.00g 50.00g
+# df -h /data
+Filesystem		    Size  Used Avail Use% Mounted on
+/dev/mapper/vg_app-lv_data   20G   45M   19G   1% /data
+# lvextend -L +5G -r /dev/vg_app/lv_data
+  Size of logical volume vg_app/lv_data changed from 20.00 GiB (5120 extents) to 25.00GiB
+(6400 extents.
+  Logical volume vg_app/lv_data successfully resized.
+resize2fs 1.43.4 (41-Jan-2017)
+Filesystem at /dev/mapper/vg_app-lv_data is mounted on /data; on-line resizing required
+old_desc_blocks = 3, new_desc_blocks = 4
+The filesystem on /dev/mapper/vg_app-lv_data is now 6553600 (4k) blocks long.
+
+# lvs
+  LV	  VG	 Attr	    LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv_app  vg_app -wi-ao----  5.00g
+  lv_data vg_app -wi-ao---- 25.00g
+  lv_logs vg_app -wi-a----- 25.00g
+# df -h /data
+Filesystem		    Size  Used Avail Use% Mounted on
+/dev/mapper/vg_app-lv_data   25G   44M   24G   1% /data
+# lvextend -L +5G /dev/vg_app/lv_data
+  Size of logical volume vg_app/lv_data changed from 25.00 GiB (6400 extents) to 30.00 GiB
+(7680 extents).
+  Logical volume vg_app/lv_data successfully resized.
+# lvs
+  LV	  VG	 Attr	    LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv_app  vg_app -wi-ao----  5.00g
+  lv_data vg_app -wi-ao---- 30.00g
+  lv_logs vg_app -wi-a----- 25.00g
+# df -h /data
+Filesystem		    Size  Used Avail Use% Mounted on
+/dev/mapper/vg_app-lv_data   25G   44M   24G   1% /data
+# resize2fs /dev/vg_app/lv_data
+resize2fs 1.43.4 (31-Jan-2017)
+Filesystem at /dev/vg_app/lv_data is mounted on /data; on-line resizing required
+old_desc_blocks = 4, new_desc,blocks = 4
+The filesystem on /dev/vg_app/lv_data is now 7864320 (4k) blocks long.
+
+# df -h /data
+Filesystem		    Size  Used Avail Use% Mounted on
+/dev/mapper/vg_app-lv_data   30G   44M   28G   1% /data
+# lvdisplay -m /dev/vg_app/lv_data
+(shows mapping for logical volume display output)
+
+# lvmdiskscan
+ /dev/vg_app/lv_data [	     20.00 GiB]
+ /dev/sda1	     [	     10.00 GiB]
+ /dev/vg_app/lv_app  [	      5.00 GiB]
+ /dev/vg_app/lv_logs [       25.00 GiB]
+ /dev/sdb  	     [	     50.00 GiB] LVM physical volume
+ /dev/sdc  	     [	     50.00 GiB] LVM physical volume
+ /dev/sdd  	     [      100.00 GiB]
+ /dev/sde  	     [      100.00 GiB]
+ 5 disks
+ 1 partition
+ 2 LVM physical volume whole disks
+ 0 LVM physical volumes
+# pvcreate /dev/sdd /dev/sde
+  Physical volume "/dev/sdd" successfully created.
+  Physical volume "/dev/sde" successfully created.
+# pvs
+  PV	     VG      Fmt  Attr PSize   PFree
+  /dev/sdb   vg_app  lvm2 a--   50.00g      0
+  /dev/sdc   vg_app  lvm2 a--   50.00g  50.00g
+  /dev/sdd           lvm2 ---  100.00g 100.00g
+  /dev/sde           lvm2 ---  100.00g 100.00g
+# vgcreate vg_safe /dev/sdd /dev/sde
+  Volume group "vg_safe" successfully created
+# vgs
+  VG	 #PV #LV #SN Attr    VSize   VFree
+  vg_app   2   3   0 wz--n-   99.99g  40.00g
+  vg_safe  2   0   0 wz--n-  199.99g 199.99g
+
+MIRROING LOGICAL VOLUMES
+# lvcreate -m 1 -L 5G -n lv_secrets vg_safe				<---Create a mirror LV
+  Logical volume "lv_secrets" created.
+# lvs
+  LV	  	VG	 Attr	    LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv_app  	vg_app   -wi-ao----  5.00g                                    
+  lv_data 	vg_app   -wi-ao---- 30.00g                                    
+  lv_logs 	vg_app   -wi-a----- 25.00g                                    
+  lv_secrets   vg_safe  rwi-a-r---  5.00g				      100.00			<---Cpy%Sync shows the percentage of data sync from mirror LV above
+# lvs -a
+  LV	  		VG	 Attr	    LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv_app  		vg_app   -wi-ao----  5.00g                                    
+  lv_data 		vg_app   -wi-ao---- 30.00g                                    
+  lv_logs 		vg_app   -wi-a----- 25.00g                                    
+  lv_secrets    	vg_safe  rwi-a-r---  5.00g				      100.00
+  [lv_secrets_rimage-0] vg_safe  iwi-aor---  5.00g
+  [lv_secrets_rimage_1] vg_safe  iwi-aor---  5.00g
+  [lv_secrets_rmeta_0]  vg_safe  ewi-aor---  4.00m								<---This shows a Raid1
+  [lv_secrets_rmeta_1]  vg_safe  ewi-aor---  4.00m
+# mkfs -t ext4 /dev/vg_safe/lv_secrets
+mke2fs 1.43.4 (31-Jan-2017)
+Creating filesystem with 1310720 4k blocks and 327680 inodes
+Filesystem UUID: 1b8b0a7a-c327-4679-a7c6-2dcfb99abe78
+Superblock backups stored on blocks:
+	32768, 98304, 163840, 229376, 294912, 819200, 884736
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (16384 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+# mkdir /secrets
+# mount /dev/vg_safe/lv_secrets /secrets
+# df -h /secrets
+Filesystem			Size  Used Avail Use% Mounted on
+/dev/mapper/vg_safe-lv_secrets  4.9G   20M  4.6G   1% /secrets		<---Mounted Logical Volume so that anything written will be automatically copied over
+
+REMOVING LOGICAL VOLUMES/PHYSICAL VOLUMES
+# umount /secrets													<---Removing Logical volumes
+# lvremove /dev/vg_safe/lv_secrets
+Do you really want to remove and DISCARD active logical volume vg_safe/lv_secrets? [y/n]:
+ y
+  Logical volume "lv_secrets" successfully removed
+# vgs
+  VG	 #PV #LV #SN Attr    VSize   VFree
+  vg_app   2   3   0 wz--n-   99.99g  40.00g
+  vg_safe  2   0   0 wz--n-  199.99g 199.99g
+# vgreduce vg_safe /dev/sde											<---Removing PV, have to reduce the VG first before removing the PV
+  Removed "/dev/sde" from volume group "vg_safe"
+# vgs
+  VG	 #PV #LV #SN Attr    VSize   VFree
+  vg_app   2   3   0 wz--n-   99.99g  40.00g
+  vg_safe  1   0   0 wz--n-  100.00g 100.00g
+# pvremove /dev/sde
+  Labels on physical volume "/dev/sde" successfully wiped.
+# pvs
+  PV	     VG      Fmt  Attr PSize   PFree
+  /dev/sdb   vg_app  lvm2 a--   50.00g      0
+  /dev/sdc   vg_app  lvm2 a--   50.00g  40.00g
+  /dev/sdd   vg_safe lvm2 a--  100.00g 100.00g
+# vgremove vg_safe
+  Volume group "vg_safe" successfully removed
+# vgs
+  VG	 #PV #LV #SN Attr    VSize   VFree
+  vg_app   2   3   0 wz--n-   99.99g  40.00g
+# pvs
+  PV	     VG      Fmt  Attr PSize   PFree
+  /dev/sdb   vg_app  lvm2 a--   50.00g      0
+  /dev/sdc   vg_app  lvm2 a--   50.00g  40.00g
+  /dev/sdd           lvm2 ---  100.00g 100.00g
+# pvremove /dev/sdd
+  Labels on physical volume "/dev/sdd" successfully wiped.
+# pvs
+  PV	     VG      Fmt  Attr PSize   PFree
+  /dev/sdb   vg_app  lvm2 a--   50.00g      0
+  /dev/sdc   vg_app  lvm2 a--   50.00g  40.00g
+
+MIGRATING DATA FROM ONE STORAGE TO ANOTHER
+# pvcreate /dev/sde
+  Physical volume "/dev/sde" successfully created.
+# vgextend vg_app /dev/sde
+  Volume group "vg_app" successfully extended
+# pvs
+  PV	     VG      Fmt  Attr PSize   PFree
+  /dev/sdb   vg_app  lvm2 a--   50.00g      0
+  /dev/sdc   vg_app  lvm2 a--   50.00g  40.00g
+  /dev/sde   vg_app  lvm2 a--  100.00g 100.00g
+# pvmove /dev/sdb /dev/sde
+  /dev/sdb: Moved: 0.18%
+  /dev/sdb: Moved: 19.27%
+  /dev/sdb: Moved: 38.49%
+  /dev/sdb: Moved: 40.00%
+  /dev/sdb: Moved: 50.00%
+  /dev/sdb: Moved: 69.28%
+  /dev/sdb: Moved: 89.16%
+  /dev/sdb: Moved: 100.00%
+# pvs
+  PV	     VG      Fmt  Attr PSize   PFree
+  /dev/sdb   vg_app  lvm2 a--   50.00g  50.00g
+  /dev/sdc   vg_app  lvm2 a--   50.00g  40.00g
+  /dev/sde   vg_app  lvm2 a--  100.00g  50.00g
+# pvdisplay /dev/sdb
+  --- Physical volume ---
+  PV Name		/dev/sdb
+  VG Name		vg_app
+  PV Size		50.00 GiB / not usable 4.00 MiB
+  Allocatable		yes
+  PE Size		4.00 MiB
+  Total PE		12799
+  Free PE		12799
+  Allocated PE		0
+  PV UUID		tsh17R-9fVk-G0sC-vWrJ-eLeY-3C9A-Wu8Qd5
+
+# vgreduce vg_app /dev/sdb
+  Removed "/dev/sdb" from volume group "vg_app"
+# pvremove /dev/sdb
+  Labels on physical volume "/dev/sdb" successfully wiped.
+# pvs
+  PV	     VG      Fmt  Attr PSize   PFree
+  /dev/sdc   vg_app  lvm2 a--   50.00g  40.00g
+  /dev/sde   vg_app  lvm2 a--  100.00g  50.00g
+
+LVM SUMMARY
+Logical Volume Manager introduces layers of abstraction including:
+	- Physical Volumes (PVs)
+	- Volume Groups (VGs)
+	- Logical Volumes (LVs)
+
+pvcreate /dev/sdb							<---create PVs
+vgcreate vg_name /dev/sdb					<---create VGs
+lvcreate -L 100G -n lv_name vg_name			<---create LVs; -L=logical size option, -n=name for LV
+mkfs -t ext4 /dev/vg_name/lv_name			<---create Filesystem using LV and mounted 
+
+lvextend -L +10G -r /dev/vg_name/lv_name	<---extend the LV
+pvcreate /dev/sdc							<---create new PV for extension
+vgextend vg_name /dev/sdc					<---extend VG with new PV
+
+lvcreate -m 1 -L 100G -n lv_name vg_name	<---Creating a Mirror LV
+
+lvremove /dev/vg_name/lv_name				<---remove the logical volume first
+vgreduce vg_name /dev/sdb					<---reduce the volume group on the drive for removal
+vgremove vg_name							<---remove the volume group
+pvremove /dev/sdb							<---remove the physical volume
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+MANAGING USERS AND GROUPS
+
+Accounts have a:
+- Username (or login ID).
+- UID (User ID). This is a unique number.
+- Default group (GID).
+- Comments.
+- Shell.
+- Home directory location.
+
+/etc/passwd
+root:x:0:0:root:/root:/bin/bash
+
+The format of the /etc/passwd:
+username:password:UID:GID:comments:home_dir:shell
+
+joe:x:1000:1000:Joe Henderson:/home/joe:/bin/bash
+
+Custom for Usernames < 8 characters
+$ ps -fu joehenderson
+UID	   PID   PPID   C STIME  TTY     TIME CMD
+joehend+   1182  1181   0 22:48 pts/1 00:00:00 -bash
+
+$ ps -fu joehenderson
+UID   PID   PPID   C STIME  TTY     TIME CMD
+1000  1182  1181   0 22:48 pts/1 00:00:00 -bash
+
+Usernames
+- Less than 8 characters in length by convention
+- Case Sensitive
+- In all lowercase by convention
+- Numbers are allowed in usernames
+- Do not use special characters
+
+Passwords are stored in /etc/shadow
+- Encrypted password used to be stored in /etc/passwd.
+- /etc/passwd is readable by everyone.
+- Now, encrypted passwords are stored in /etc/shadow
+- /etc/shadow is only readable by root user.
+- Prevents users trying to crack passwords.
+
+UIDs
+- The root account is always UID 0.
+- UIDs are unique numbers.
+- System accounts have UIDs < 1000.
+  - Configured in /etc/login.defs
+
+GID
+- The GID listed in the /etc/passwd for is the default group for an account
+- New files belong to a user's default group.
+- Users can switch groups by using the newgrp command.
+
+Comment Field
+- Typically contains the user's full name.
+- In the case of a system or application account, it often contains what the account is used for.
+- May contain additional information like a phone number.
+- Also called the GECOS field
+
+Home Directory
+- Upon login the user is placed in their home directory
+- If that directory doesn't exist, they are placed in "/".
+
+Shell
+- The shell will be executed when a user logs in.
+- A list of available shells are in /etc/shells.
+- The shell doesn't have to be a shell.
+- To prevent interactive use of an account, use /usr/sbin/nologin or /bin/false as the shell.
+- Shells can be command line applications
+
+/etc/shadow
+root:$6$9g1IC8AYzqoZP21:16502:0:99999:7:::
+1st Field - Username
+2nd Field - Encrypted_Password
+3rd Field - Number of days since Jan 1,1970 since PW has been changed
+4th Field - # of days before PW can be changed
+5th Field - # of days after which the PW must be changed
+6th Field - # of days to warn the user that their PW will expire
+7th Field - # of days after the PW has expired that the account is disabled
+8th Field - # of days since Jan 1,1970 that an account has been disabled
+9th Field - is reserved for future use
+
+useradd
+useradd [options] username
+-c "COMMENT"		Comments for the account.
+-m			Create the home directory.
+-s /shell/path		The path to the user's shell
+-g GROUP		Specify the default group
+-G GROUP1,GROUPN	Additional groups
+-r			Create a System Account
+-d /home/dir		Specify the home directory
+
+useradd -c "Grant Stewart" -m -s /bin/bash grant
+NOTE: This is one command line. It's displayed on multiple lines for readability.
+
+Create a password using passwd
+# passwd grant
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated
+successfully
+
+Account information for "grant"
+# tail -1 /etc/passwd
+grant:x:1000:1000:Grant Stewart:/home/grant:/bin/bash
+# tail -1 /etc/shadow
+grant:$6$iDDsgsPYtR8c2Uc.:16507:0:99999:7:::
+
+# useradd -c "Eddie Harris" -m -s /bin/bash -g sales -G projectx eharris
+# passwd eharris
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+# 
+
+System or Application Accounts
+# useradd -c "Apache Web Server User" -d /opt/apache -r -s /usr/sbin/nologin apache
+# tail -1 /etc/passwd
+apache:x:999:999:Apache Web Server User:/opt/apache:/usr/sbin/nologin
+#
+
+/etc/skel
+- When using -m the home directory for the account is created.
+- The contents of /etc/skel are copied into the home directory.
+- /etc/skel typically contains shell configuration files. (.profile, .bashrc, etc) which isn't useful for system/application accounts
+
+Use -u to specify the UID
+It's common practice to use the same UID for an account across multiple systems
+This makes sharing data easier
+# useradd -c "MySQL Server" -d /opt/mysql -u 97 -s /usr/sbin/nologin mysql
+# tail -1 /etc/passwd
+mysql:x:97:1003:MySQL Server:/opt/mysql:/usr/sbin/nologin
+#
+
+userdel [-r] username 
+# ls /home
+eharris grant
+# userdel eharris	<----Deleting the User account
+# ls /home
+eharris grant
+# userdel -r grant	<----Deleting the home director and user account
+# ls /home
+eharris
+
+usermod
+usermod [options] username
+-c "COMMENT"		Comments account.
+-g GROUP		Specify the default group.
+-G GROUP1,GROUPN	Additional groups.
+-s /shell/path		Path the the user's shell.
+
+# grep mysql /etc/passwd
+mysql:x:97:1003:MySQL Server:/opt/mysql:/usr/sbin/nologin
+# usermod -c "MySQL User" mysql
+# grep mysql /etc/passwd
+mysql:x:97:1003:MySQL User:/opt/mysql:/usr/sbin/nologin
+
+/etc/group
+root:x:0:sales:x:1001:john,mary
+The format of the /etc/group file:
+group_name:password:GID:account1,accountN
+
+groups[username]
+# groups root
+root
+
+groupadd [options] group_name
+# groupadd web
+# tail -1 /etc/group
+web:x:1003:
+# groupadd -g 2500 db
+# tail -1 /etc/group
+db:x:2500:
+#
+
+groupdel group_name
+# groupdel db
+# 
+
+groupmod
+groupmod [options] group_name
+-g GID		Change the group ID to GID.
+-n GROUP	Rename the group to GROUP.
+
+# grep web /etc/group
+web:x:1003:
+# groupmod -g 1234 web
+# grep web /etc/group
+web:x:1234:
+# groupmod -n http web
+# grep http /etc/group
+http:x:1234:
+
+***DEMO***
+Create the following groups
+- writers
+- tv
+- movie
+Create user accounts
+- All users will have the default group of writers.
+- Some will also be in the tv group.
+- Others will be in the movie group.
+
+# groupadd writers
+# groupadd tv
+# groupadd movies
+# tail -3 /etc/group
+writers:x:1002:
+tv:x:1003:
+movie:x:1004:
+# useradd -c "Carlton Cuse" -g writers -G tv -m -s /bin/bash ccuse
+# passwd ccuse
+Changing password for user ccuse.
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: all authentication tokens updated successfully.
+# groups ccuse
+ccuse : writers tv
+# useradd -c "David Fury" -g writers -G tv -m -s /bin/bash dfury
+# passwd dfury
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: all authentication tokens updated successfully.
+# groups dfury
+dfury : writers tv
+# useradd -c "Matt Damon" -g writers -G movie -m -s /bin/bash mdamon
+# passwd mdamon
+Changing password for user mdamon.
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: all authentication tokens updated successfully.
+# groups mdamon
+mdamon : writers movie
+# useradd -c "Ben Affleck" -g writers -G movie,tv -m -s /bin/bash baffleck
+# passwd baffleck
+Changing password for user baffleck.
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: all authentication tokens updated successfully.
+# groups baffleck
+baffleck: writers tv movie
+# tail -3 /etc/group
+writers:x:1002:
+tv:x:1003:ccuse,dfury,baffleck
+movie:x:1004:mdamon,baffleck
+# grep 1002 /etc/passwd
+ccuse:x:1002:1002:Carlton Cuse:/home/ccuse:/bin/bash
+dfury:x:1003:1002:David Fury:/home/dfury:/bin/bash
+mdamon:x:1004:1002:Matt Damon:/home/mdamon:/bin/bash
+baffleck:x:1005:1002:Ben Affleck:/home/baffleck:/bin/bash
+#
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+NETWORKING
+
+TCP/IP/UDP 
+- Used for network communications
+- TCP = Transmission Control Protocol
+- IP = Internet Protocol
+- TCP controls data exchange
+- IP sends data from one device to another
+- Hosts = devices on a network that have an IP address
+- UDP = Universal Device Protocol 
+
+IP Networking
+- IP Address
+	Example: 199.83.131.186
+- Subnet Mask
+	Example: 255.255.255.0
+- Broadcast Address
+	Example: 199.83.131.255
+- octet.octet.octet.octet
+	Octet values can be from 0 to 255
+
+IP Addresses comprise of two parts
+- Network Address
+	Tells routers what network the host belong to and thus where to route data that is destined for that host. 
+- Host Address
+	Tells routers the specific device that the data should be delivered to
+- Each must be a unique for proper routing
+- Address classes
+	Used to determine the network address and host address
+
+Classful Networks
+Class		Network				Hosts Allowed
+  A			1.0->127.0		     16,777,216
+		  Ex: 17.24.88.9
+  B		  128.0->191.255 	       65,536
+         Ex: 183.194.46.31
+  C 	192.0.0->233.255.255        255
+		 Ex: 199.83.131.186
+
+Subnet Masks
+Class	Subnet Mask
+  A 	255.0.0.0
+  B 	255.255.0.0
+  C 	255.255.255.0
+
+The network portion of an IP Address corresponds to the 255s portion of the subnet mask.
+For example, the first octet of a Class A network is the network portion while the 3 remaining octets are for host addresses.
+
+Broadcast Addresses 
+Class	Network 	    Subnet Mask			Broadcast
+  A 	17.0.0.0 		 255.0.0.0			17.255.255.255
+  B 	183.194.0.0 	 255.255.0.0		183.194.255.255
+  C 	199.83.131.0 	255.255.255.0		199.83.131.255
+Broadcast address is a special logical address used to send data to all hosts on a given network
+In addition to their IP Address, all hosts have a broadcast address.
+
+Classless Inter-Domain Routing/CIDR
+- IP: 121.67.198.94
+	Class A network: 121.0.0.0
+	Class A Subnet: 255.0.0.0
+	Class A Broadcast: 121.255.255.255
+- IP: 121.67.198.94 Subnet: 255.255.255.0
+	CIDR network: 121.67.198.0
+	CIDR subnet: 255.255.255.0
+	CIDR broadcast: 121.67.198.255
+
+Reserved Private Address Space 
+Class			  Range						Private Address Space 
+  A 	  1.0.0.0 - 127.255.255.255		   10.0.0.0 - 10.255.255.255
+  B 	128.0.0.0 - 191.255.255.255		 172.16.0.0 - 172.31.255.255
+  C 	192.0.0.0 - 233.255.255.255		192.168.0.0 - 192.168.255.255
+These private addresses are also called non-routable IPs, since they are not routed through the public internet.
+These are also referred to as RFC1918 addresses, which refers to the RFC1918 standards document where these private ranges were initially defined.
+
+
+Determining Your IP Address
+- ip address
+	ip addr 
+	ip a 
+	ip address show OR ip a s
+Two things are shown when running ip command
+1. lo - loopback device, special virtual network interface that a Linux system uses to communicate with itself. IP Address is 127.0.0.1
+2. eth0 - Actual hardware device, has an IP address of 192.168.1.122 
+
+- ifconfig
+	Execute with no arguments
+
+Hostnames
+Host is a device connected to the network, has an IP Address.
+A hostname is a human-readable name that corresponds to IP Address
+	webprod01 = 10.109.155.174
+
+DNS Hostnames
+FQDN - Fully Qualified Domain Name 
+	webprod01.mycompany.com 
+TLD - Top Level Domain
+	.com, .net, .org, .etc 
+Domains
+	below(to the left of) TLD
+Sub-Domain
+	below(to the left of) the domain
+	webprod.ny.us.mycompany.com 
+
+Displaying the Hostname 
+$ hostname
+webprod01 
+$ uname -n
+webprod01 
+$ hostname -f 
+webprod01.mycompany.com
+
+Setting the Hostname
+# hostname webprod01
+# echo 'webprod01' > /etc/hostname
+# vi /etc/sysconfig/network
+  HOSTNAME=webprod01
+
+Resolving DNS Names
+You can use two commands - host/dig
+$ host www.mycompany.com
+webprod01.mycompany.com has address 1.2.1.6
+$ host 1.2.1.6
+6.1.2.1.in-addr.arpa domain name pointer
+www.mycompany.com.
+$
+
+The /etc/hosts File
+Format:
+	IP FQDN alias(es)
+	10.11.12.13 webprod02.mycorp.com webprod02
+Now you can refer to the host by name.
+	webprod02.mycorp.com OR webprod02
+/etc/hosts is local to your linux system. It does not propagate to the rest of the network.
+
+EXAMPLE:
+127.0.0.1		localhost
+1.2.1.6			webprod01.mycompany.com webprod01
+10.11.12.14		webprod02.mycompany.com webprod02 
+10.11.12.15		webprod03.mycompany.com webprod03
+10.11.13.7		dbcluster
+
+/etc/nsswitch.conf 
+NSS = Name Service Switch
+Controls the search order for resolutions
+
+hosts: files dns
+hosts: files nis dns
+
+Network Ports
+When a service starts it binds itself to a port.
+Ports 1-1023 are well-known ports.
+	22 - SSH
+	25 - SMTP
+	80 - HTTP
+	143 - IMAP
+	389 - LDAP
+	443 - HTTPS
+https://www.mybank.com <--- going through Port 443
+
+/etc/services File
+Maps port names to port numbers
+
+ssh		22/tcp		# SSH Remote Login Protocol
+smtp	25/tcp		# SMTP
+https	80/tcp		# http
+ldap	389/tcp		# LDAP
+https	443/tcp		# http protocol over TLS/SSL
+
+DHCP
+Dynamic Host Configuration Protocol
+DHCP servers assign IP address to DHCP clients
+	IP Address 
+	netmask
+	gateway
+	DNS servers
+	
+Each IP is "leased" from the pool of IP addresses the DHCP server manages.
+	The lease expiration time is configurable on the DHCP server. (1hr, 1day, 1week, etc.)
+	The clinet must renew the lease if it wants to keep using the IP address.
+	If no renewal is received, the IP is available to other DHCP clients.
+	
+Configuring a DHCP Client - RHEL
+ifconfig -a OR ip link
+/etc/sysconfig/network-scripts/ifcfg-DEVICE
+/etc/sysconfig/network-scripts/ifcfg-eth0
+/etc/sysconfig/network-scripts/ifcfg-enp5s2
+BOOTPROTO=dhcp
+
+Configuring a DHCP Client - Ubuntu
+/etc/network/interfaces
+auto eth0
+iface eth0 inet dhcp
+
+Assigning a Static IP Address - RHEL
+/etc/sysconfig/network-scripts/ifcfg-eth0
+DEVICE = eth0
+BOOTPROTO = static
+IPADDR = 10.109.155.174
+NETMASK = 255.255.255.0
+NETWORK = 10.109.155.0
+BROADCAST = 10.109.155.0
+GATEWAY = 10.109.155.1
+ONBOOT = yes
+
+Assigning a Static IP Address - Ubuntu
+/etc/network/interfaces
+auto eth0
+iface eth0 inet static
+		address 10.109.155.174
+		netmaks 255.255.255.0
+		gateway 10.109.155.1
+		
+Manually Assigning an IP Address
+Format:
+ip address add IP[/NETMASK] dev NETWORK_DEVICE
+ip address add 10.11.12.13 dev eth0
+ip address add 10.11.12.13/255.255.255.0 dev eth0
+ip link set eth0 up
+ifconfig NETWORK_DEVICE addr netmask SUBNET_MASK
+ifconfig eth0 10.11.12.13
+ifconfig eth0 10.11.12.13 netmask 255.255.255.0
+ifconfig eth0 up
+
+ifup/ifdown
+Can be used instead of ifconfig/ip
+Distribution dependent
+Uses configuration files
+Examples:
+ifup eth0
+ifup enp5s2
+ifdown eth0
+ifdown enp5s2
+
+GUI/TUI Tools
+Graphical User Interface/Textual User Interface
+RedHat
+	nmtui
+	system-config-network
+SUSE
+	YaST - Yet Another Setup Tool
+Ubuntu
+	No official tool available
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+NETWORK TROUBLESHOOTING
+
+Testing Connectivity with Ping
+Format:
+	ping HOST 
+	ping -c COUNT HOST 
+
+Example:
+	ping -c 3 google.com
+	
+You can trace packets sent through pings using 'traceroute' **Requires ROOT privileges**
+# traceroute -n google.com
+traceroute to google.com (216.58.2.7), 30 hops
+max, 60 byte packets
+Diagnosing Network Connections 413
+  1  10.0.2.2  0.296 ms  0.178 ms  0.220 ms 
+  2  192.168.1.1  2.529 ms  2.713 ms  2.630 ms
+  3  72.14.237.231  23.750 ms  22.087 ms 
+  12.122.132.137  22.701 ms 
+  4  216.58.216.78  20.549 ms  12.250.16.30  22.904 ms
+  216.58.216.78  20.724 ms
+  
+Alternative is using 'tracepath' ** Does NOT require ROOT privileges**
+$ tracepath -n google.com
+1?: [LOCALHOST] 	pmtu 1500
+1:  10.0.2.2		0.470ms
+1:  10.0.2.2		0.649ms
+2:  192.168.1.1		2.147ms asymm 64
+...
+
+The netstat Command
+-n 		Display numerical addresses and ports
+-i 		Displays a list of network interfaces
+-r 		Displays the route table. (netstat -rn)
+-p		Display the PID and program used
+-l		Display listening sockets. (netstat -nlp)
+-t		Limit the output to TCP (netstat -ntlp)
+-u 		Limit the output to UDP (netstat -nulp)
+
+Packet sniffing with tcpdump
+tcpdump
+-n		Display numerical addresses and ports
+-A		Display ASCII(text) output
+-v 		Verbose mode. Produce more output
+-vv 	More verbose output
+-vvv	Even more verbose output
+
+telnet Command
+telnet HOST_OR_IP PORT_NUMBER
+$ telnet google.com 80
+Trying 216.58.2.7...
+Connected to google.com
+Escape character is '^]'.
+GET /
+HTTP/1.0 200 OK
+^]
+telnet> quit
+closed.
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+SPECIAL MODES 
+
+Setuid - Sets the executable program's user ID to the specified user. 
+When a process is started, it runs using the starting user's UID and GID.
+setuid = Set User ID upon execution
+-rwsr-xr-x 1 root root /usr/bin/passwd
+ping
+chsh 
+setuid files are an attack surface
+Not honored on shell scripts
+
+Octal Permissions
+setuid		setgid		sticky
+  0			   0		  0		Value for off
+  1			   1		  1		Binary value for on
+  4			   2		  1		Base 10 value for on
+  
+Adding the Setuid Attribute
+chmod u+s /path/to/file
+chmod 4755 /path/to/file
+
+Removing the Setuid Attribute
+chmod u-s /path/to/file
+chmod 0755 /path/to/file
+
+Finding Setuid Files 
+find / -perm /4000 -ls 
+# Older style:
+find / -perm +4000 -ls 
+
+Only the Owner Should Edit Setuid Files 
+
+				Symbolic 		Octal
+Good:		   -rwsr-xr-x 		4755
+
+Bad: 		   -rwsrwxr-x		4775
+
+Really Bad:    -rwsrwxrwx		4777
+
+
+Setgid
+setgid = Set Group ID upon execution
+-rwxr-sr-x 1 root tty /usr/bin/wall
+crw--w---- 1 bob  tty /dev/pts/0
+
+Finding Setgid Files 
+find / -perm /2000 -ls 
+# Older style:
+find / -perm +2000 -ls
+
+Adding the Setgid Attribute
+chmod g+s /path/to/file
+chmod 2755 /path/to/file
+
+Adding the Setuid & Setgid Attributes
+chmod ug+s /path/to/file
+chmod 6755 /path/to/file
+
+Removing the Setgid Attribute
+chmod g-s /path/to/file
+chmod 0755 /path/to/file
+
+Setgid on Directories
+setgid on a directory causes new files to inherit the group of the directory.
+setgid causes directories to inherit the setgid bit.
+It is not retroactive. Only sets new files added to the directory when setgid is applied.
+Great for working with groups
+
+Use an Integrity Checker
+Other options to find
+Tripwire
+AIDE (Advanced Intrusion Detection Environment)
+OSSEC
+Samhain
+Package managers
+
+The Sticky Bit
+Use on a directory to only allow the owner of the file/directory to delete it.
+Used on /tmp:
+drwxrwxrwt 10 root root 4096 Feb 1 09:47 /tmp 		<---'t' at the end represents sticky bit is present
+
+Adding the Sticky Bit
+chmod o+t /path/to/directory
+chmod 1777 /path/to/directory
+
+Removing the Sticky Bit
+chmod o-t /path/to/directory
+chmod 0777 /path/to/directory
+
+Reading ls Output
+A capitalized special permission means the underlying normal permission is not set.
+A lowercase special permission means the underlying normal permission is set.
+Example:
+$ ls -l test
+-rw-r--r-- 1 root root 0 Feb 14 11:21 test
+$ chmod u+s test
+$ ls -l test
+-rwSr--r-- 1 root root 0 Feb 14 11:21 test
+$ chmod u+x test
+$ ls -l test
+-rwsr--r-- 1 root root 0 Feb 14 11:21 test
+
+-rwxrwSr-- 1 root root 0 Feb 14 11:21 test
+drwxr-xr-T 1 root root 0 Feb 14 11:30 testd
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+SHELL SCRIPTING
+What scripts are.
+The components that make up a script.
+How to use variables in your scripts.
+How to perform tests and make decisions.
+How to accept command line arguments.
+How to accept input from a user.
+
+Scripts
+Contain a series of commands.
+An interpreter executes commands in the script.
+Anything you can type at the command line, you can put in a script.
+Great for automating tasks.
+
+script.sh
+#!/bin/bash
+echo "Scripting is fun!"
+
+$ chmod 755 script.sh
+$ ./script.sh
+Scripting is fun!
+$ 
+
+# - pound sign is called sharp (like musical note)
+! - exclamation mark is called bang
+#! - is called sharp bang or shebang
+
+#!/bin/csh
+echo "This script uses csh as the interpreter."
+#!/bin/ksh
+echo "This script uses ksh as the interpreter."
+#!/bin/zsh
+echo "This script uses zsh as the interpreter."
+
+
+sleepy.sh
+#!/bin/bash
+sleep 90
+
+$ ./sleepy.sh &
+[1] 16796
+$ ps -fp 16796
+UID		PID		PPID	C STIME  TTY    TIME CMD  
+Jason	16796   16725	0 22:50  pts/0  00:00:00
+/bin/bash ./sleepy.sh
+$
+
+The interpreter executes the script
+$ /tmp/sleepy.sh &
+[1] 16804
+$ ps -fp 16804
+UID		PID		PPID	C STIME  TTY    TIME CMD  
+Jason	16804   16725	0 22:51  pts/0  00:00:00
+/bin/bash /tmp/sleepy.sh
+$ ps -ef| grep 16804 | grep -v grep 
+jason   16804  16725  0  22:51  pts/0  00:00:00
+/bin/bash  /tmp/sleepy.sh
+jason   16805  16804  0  22:51  pts/0  00:00:00
+sleep 90
+$ pstree -p 16804
+sleepy.sh(16804)----sleep(16805)
+$
+
+Shebang or Not to Shebang
+If a script does not contain a shebang the commands are executed using your shell.
+You might get lucky. Maybe. Hopefully.
+Different shells have slightly varying syntax.
+
+More than just Shell Scripts
+#!/usr/bin/python
+print "This is a Python script."
+
+$ chmod 755 hi.py
+$ ./hi.py 
+This is a Python script.
+$
+
+Variables 
+- Storage locations that have a name
+- Name-value pairs
+- Syntax:
+	VARIABLE_NAME="VALUE"
+- Variables are case sensitive
+- By convention variables are uppercase
+
+Variable Usage 
+
+#!/bin/bash
+MY_SHELL="bash"
+echo "I like the $MY_SHELL shell."
+
+#!/bin/bash
+MY_SHELL="bash"
+echo "I like the ${MY_SHELL} shell."
+
+#!/bin/bash
+MY_SHELL="bash"
+echo "I am ${MY_SHELL}ing on my keyboard." 		<---Curly Brackets help if you need to add stuff after the variable 
+Output: I am bashing on my keyboard.
+
+#!/bin/bash
+MY_SHELL="bash"
+echo "I am $MY_SHELLing on my keyboard."
+Output: I am  on my keyboard.					<---What happens without the brackets
+
+Assign command output to a variable
+#!/bin/bash
+SERVER_NAME=$(hostname)
+echo "You are running this script on ${SERVER_NAME}."
+Output: You are running this script on linuxsvr.
+
+CAN ALSO USE 
+
+#!/bin/bash
+SERVER_NAME=`hostname`							<--- Use backticks (~` button)
+echo "You are running this script on ${SERVER_NAME}."
+Output: You are running this script on linuxsvr.
+
+Variable Names
+Variable names can start with a letter or underscore but they cannot start with a digit.
+
+Valid:
+	FIRST3LETTERS="ABC"
+	FIRST_THREE_LETTERS="ABC"
+	firstThreeLetters="ABC"
+Invalid:
+	3LETTERS="ABC"
+	first-three-letters="ABC"
+	first@Three@Letters="ABC"
+
+Tests
+Syntax:
+	[condition-to-test-for]
+Example:
+	[-e /etc/passwd] 
+
+File Operators (Tests)
+-d FILE		True if file is a directory. 
+-e FILE		True if file exists.
+-f FILE		True if file exists and is a regular file.
+-r FILE		True if file is readable by you.
+-s FILE		True if file exists and is not empty.
+-w FILE		True if the file is writable by you.
+-x FILE		True if the file is executable by you.
+
+String Operators (Tests)
+-z STRING				True if string is empty.
+-n STRING				True if string is not empty.
+STRING1 = STRING2		True if the strings are equal.
+STRING1! = STRING2 		True if the strings are not equal.
+
+Arithmetic Operators (Tests)
+arg1 -eq arg2 	True if arg1 is equal to arg2.
+arg1 -ne arg2 	True if arg1 is not equal to arg2.
+arg1 -lt arg2	True if arg1 is less than arg2.
+arg1 -le arg2	True if arg1 is less than or equal to arg2.
+arg1 -gt arg2	True if arg1 is greater than arg2.
+arg1 -ge arg2 	True if arg1 is greater than or equal to arg2.
+
+Making Decisions - The if statement
+
+if [condition-is-true]
+then
+	command 1
+	command 2
+	command N
+fi
+
+#!/bin/bash
+MY_SHELL="bash"
+
+if ["$MY_SHELL" = "bash"]
+then
+	echo "You seem to like the bash shell."
+fi
+Output: You seem to like the bash shell.
+
+
+The if/else statement
+
+if [condition-is-true]
+then
+	command N
+else
+	command N 
+fi
+
+#!/bin/bash
+MY_SHELL="csh"
+
+if ["$MY_SHELL" = "bash"]
+then
+	echo "You seem to like the bash shell."
+else 
+	echo "You don't seem to like the bash shell."
+fi
+
+
+The if/elif/else statement
+
+if [condition-is-true]
+then
+	command N 
+elif [condition-is-true]
+then 
+	command N
+else
+	command N
+fi
+
+#!/bin/bash
+MY_SHELL="csh"
+
+if ["$MY_SHELL" = "bash"]
+then
+	echo "You seem to like the bash shell."
+elif ["$MY_SHELL" = "csh"]
+then
+	echo "You seem to like the csh shell."
+else 
+	echo "You don't seem to like the bash or csh shells."
+fi
+
+
+For Loop
+
+for VARIABLE_NAME in ITEM_1 ITEM_N
+do
+   command 1
+   command 2
+   command N
+done
+
+#!/bin/bash
+for COLOR in red green blue
+do
+   echo "COLOR: $COLOR"
+done
+
+Output:
+COLOR: red
+COLOR: green
+COLOR: blue
+
+#!/bin/bash
+PICTURES=$(ls *jpg)
+DATE=$(date +%F)
+
+for PICTURE in $PICTURES 
+do
+   echo "Renaming ${PICTURE} to ${DATE}-${PICTURE}"
+   mv ${PICTURE} ${DATE}-${PICTURE} 
+done 
+
+$ls
+bear.jpg man.jpg pig.jpg rename-pics.sh
+$ ./rename-pics.sh 
+Renaming bear.jpg to 2015-03-06-bear.jpg
+Renaming man.jpg to 2015-03-06-man.jpg
+Renaming pig.jpg to 2015-03-06-pig.jpg
+$ ls
+2015-03-06-bear.jpg  2015-03-06-man.jpg 
+2015-03-06-pig.jpg  renam-pics.sh
+$
+
+
+Positional Parameters
+
+$ script.sh parameter1 parameter2 parameter3
+
+$0:"script.sh"
+$1:"parameter1"
+$2:"parameter2"
+$3:"parameter3"
+
+#!/bin/bash
+echo "Executing script: $0"
+echo "Archiving user: $1"
+# Lock the account
+passwd -l $1
+# Create an archive of the home directory.
+tar cf /archives/${1}.tar.gz /home/${1}
+
+$ ./archive_user.sh elvis
+Executing script: ./archive_user.sh
+Archiving user: elvis
+passwd: password expiry information changed.
+tar: Removing leading `/' from member names
+$
+
+#!/bin/bash
+USER=$1 # The first parameter is the user.
+echo "Executing script: $0"
+echo "Archiving user: $USER"
+# Lock the account
+passwd -l $USER
+# Create an archive of the home directory.
+tar cf /archives/${USER}.tar.gz /home/${USER}
+
+
+#!/bin/bash
+echo "Executing script: $0"
+for USER in $@
+do
+	echo "Archiving user: $USER"
+	# Lock the account
+	passwd -l $USER
+	# Create an archive of the home directory.
+	tar cf /archives/${USER}.tar.gz /home/${USER}
+done
+
+$ ./archive_user.sh chet joe
+Executing script: ./archive_user.sh
+Archiving user: chet
+passwd: password expiry information changed.
+tar: Removing leading `/' from member names
+Archiving user: joe
+passwd: password expiry information changed.
+tar: Removing leading `/' from member names
+$
+
+
+Accepting User Input (STDIN)
+The read command accepts STDIN.
+Syntax:
+	read -p "PROMPT" VARIABLES
+	
+#!/bin/bash
+read -p "Enter a user name: " USER
+echo "Archiving user: $USER"
+# Lock the account
+passwd -l $USER
+# Create an archive of the home directory.
+tar cf /archives/${USER}.tar.gz /home/${USER}
+
+$ ./archive_user.sh
+Enter a user name: mitch
+Archiving user: mitch
+passwd: password expiry information changed.
+tar: Removing leading `/' from member names
+$
+
+SUMMARY
+#!/path/to/interpreter
+VARIABLE_NAME="Value"
+$VARIABLE_NAME
+${VARIABLE_NAME}
+VARIABLE_NAME=$(command)
+
+if [condition-is-true]
+then
+    commands
+elif [conditions-is-true]
+then
+	commands
+else
+	commands
+fi
+
+for VARIABLE_NAME in ITEM_1 ITEM_N
+do
+   command 1
+   command 2
+   command N
+done
+
+Positional Parameters:
+$0, $1, $2, $3 ... $9
+$@
+Comments start with #.
+Use read to accept input.
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+TAB COMPLETION 
+- Can save you typing
+- Can provide a list of choices
+- Works with commands
+- Works with file and directory names
+- Works with arguments to commands
+
+REPEAT AS ROOT
+Use command:
+sudo !!
+
+$ adduser sam
+-bash: /usr/sbin/adduser: Permission denied
+$ sudo !!
+sudo adduser sam
+$ id sam 
+uid=1007(sam) gid=1007(sam) groups=1007(sam) 
+$ userdel -r sam 
+-bash: /usr/sbin/userdel: Permission denied 
+$ sudo !!
+sudo userdel -r sam
+$ whoami 
+jason 
+$ uptime 
+12:22:45 up 24 min, 1 user, load average: 0.00, 0.00, 0.00
+$ df -hT /boot
+Filesystem     Type  Size  Used  Avail  Use%  Mounted on
+/dev/vda1      ext4  485M   55M   406M   12%  /boot 
+$ !u 
+uptime 
+12:22:52 up 24 min, 1 user, load average: 0.00, 0.00, 0.00
+$ sudo !w
+sudo whoami 
+root
+$ useradd jim
+-bash: /usr/sbin/adduser: Permission denied
+$ su -c "!!"
+su -c "useradd jim"
+Password: (enter password)
+$ id jim
+uid=1007(jim) gid=1007(jim) groups=1007(jim)
+$ userdel -r jim
+-bash: /usr/sbin/userdel: Permission denied
+$ su -c "!!"
+su -c "userdel -r jim"
+Password: (enter password)
+$ id jim
+id: jim: No such user
+$ 
+
+RERUN A COMMAND STARTING WITH STRING 
+Syntax:
+	- !<STRING>
+Examples:
+	- !d 
+	- !du 
+	- !df 
+
+Great for rechecking status: 
+	- Determine status.
+	- Perform work.
+	- Recheck status.
+
+$ cd /mnt/data/restore
+$ df -h
+Filesystem     Size  Used  Avail  Use%  Mounted on
+/dev/vda1      485M   55M   406M   12%  /mnt/data 
+$ tar xf ~/backup.tar 
+$ !d
+df -h .
+Filesystem     Size  Used  Avail  Use%  Mounted on
+/dev/vda1      485M  444M    17M   97%  /mnt/data 
+$ sudo -s 
+# cd /etc/opt 
+# mkdir myapp
+# useradd myapp 
+# chown myapp myapp
+# chmod 700 myapp
+# cd /var/log
+# !m 
+mkdir myapp
+# !cho 
+chown myapp myapp 
+# !chmo 
+chmod 700 myapp
+# 
+
+REUSE ARGUMENTS
+Helpful when working on a series of items.
+	- Files
+	- Directories 
+	- Etc.
+Helpful for correcting command typos. 
+To use the arguments from the previous command line in your current command, type "!*"
+
+$ touch file1 file2 file3
+# ls !*
+ls file1 file2 file3
+file1 file2 file3
+$ vi !*
+vi file1 file2 file3
+3 files to edit
+(EDIT FILES)
+$ cat !*
+cat file1 file2 file3
+This is file one.
+This is file2.
+This is file3
+$ mv !* /tmp/
+mv file1 file2 file3 /tmp/
+$ ls /tmp/file*
+/tmp/file1 /tmp/file2 /tmp/file3
+$
+
+$ cd tmp
+$ mkdir one two three 
+$ chmod 700 !*
+chmod 700 one two three 
+$ ls -l
+total 12
+drwx------ 2 jason jason 4096 Jul 5 23:09 one
+drwx------ 2 jason jason 4096 Jul 5 23:09 two 
+drwx------ 2 jason jason 4096 Jul 5 23:09 three 
+$ grpe -i error /var/log/syslog 
+No command 'grpe' found, did you mean:
+Command 'grape' from package 'groovy (universe)
+....
+grpe: command not found
+$ grep !* 
+grep -i error /var/log/syslog
+grep: /var/log/syslog: Permission denied
+$ sudo !!
+
+STRIP OUT COMMENTS AND BLANK LINES
+$ grep -Ev '^#|^$' file.txt^C 
+$ cd /etc/httpd/
+$ ls
+conf conf.d logs modules run
+$ cd conf
+$ ls 
+httpd.conf magic
+$ cat httpd.conf 
+$ grep -Ev '^#|^$' httpd.conf
+(output)
+$ grep -Ev '^#|^$' httpd.conf|less 
+(output)
+$ grep -Ev '^#|^$' httpd.conf|less 
+$ wc -l httpd.conf 
+1009 httpd.conf 
+$ grep -Ev '^#|^$' httpd.conf | wc -l
+238
+$ 
+
+REUSE THE LAST ITEM FROM THE PREVIOUS COMMAND 
+Helpful when working on a single item.
+	- File
+	- Directory
+	- User
+To use the last item on the previous command line in your current command, type "!$"
+
+$ mkdir restore
+$ cd !$
+cd restore
+$ pwd
+/home/jason/restore
+$ unzip /home/jason/Downloads/backup.zip
+Archive:  /home/jason/Downloads/backup.zip
+ extracting: file1.txt
+ extracting: file2.txt
+ extracting: file3.txt
+$ rm !$
+rm /home/jason/Downloads/backup.zip
+$ mkdir mispel
+$ rmdir !$
+rmdir mispel
+$ mkdir !$l
+mkdir mispell
+$ cd !$
+cd mispell
+$ pwd 
+/home/jason/restore/mispell 
+$ cd 
+$ sudo useradd - m -s /bin/bash jimmy
+$ sudo passwd !$
+sudo passwd jimmy
+Enter new UNIX password: 
+Retype new UNIX password:
+passwd: password updated succesfully 
+$ sudo chage -M 60 !$
+sudo chage -M 60 jimmy
+$ sudo chage -l !$
+sudo chage -l jimmy 
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+CREATING FIREWALL USING IPTABLES (MUST RUN AS ROOT)
+
+IPTables Firewall
+- Considerations: Most distro's have other firewall options.
+	- Redhat/CentOS uses firewalld -> firewalld provides an easier way to interact with iptables. But some applications may require the use of iptables directly.
+	- Ubuntu uses UFW -> UFW is another command line toolset for manipulating iptables
+	Docker may not be completely compatible with some iptables services.
+	
+
+IPTables
+- Part of the Netfilter project
+- Provides a means to decide what to do with ip traffic
+- Provides Several Different Tables
+	A few important ones are:
+	- NAT -> For (N)etwork (A)ddress (T)ranslation
+	- MANGLE -> For modifying packets
+	- Filter -> Decide which packets get processed
+	
+	Tables have chains - set of chains
+	A Chain is a sequential list of rules - set of rules, goes into a table 
+	A Rule defines particular kinds of packets and where they go - basic unit, goes into a chain 
+	
+Filter Table: Default Chains
+	INPUT -> Pakcets recived on the network interface that are destined for the machine
+	OUTPUT -> Packets originating on the machine that are destined for other systems
+	FORWARD -> Packets recieved on the network interface that are destined for another system
+	
+Each Rule has two things:
+	1. Specification of a type of packet. Criteria for matching.
+	2. A routing to a TARGET (possibly another chain, or DROP, ACCEPT, REJECT, RETURN, and other built-in targets.)
+
+Default Policy: Can be set on INPUT, OUTPUT, and Forward
+Common Options:
+	- ACCEPT -> The packet is allowed through the filter.
+	- DROP -> The packet processing ceases, the packet stops.
+	- REJECT -> Drop the packet and inform the remote machine
+	
+IPTables Command: iptables
+
+	Create chains
+	Creates rules in chains
+	Sets default policies
+	Lists current chains and rules
+	Display packet counts
+	Reset packet counts
+	
+Firewall Principle:
+	Block all incoming traffic, open up ports as needed.
+	
+To Block all incoming traffic: (BE CAREFUL DON'T RUN THIS YET)
+	Default Policy
+		iptables -P chain target
+		iptables -P INPUT DROP 
+		
+Adding a Rule
+	iptables -A chain_name rule_criteria -j TARGET
+	
+		rule_criteria:
+		- -p protocol (specify the kind of packets usually tcp or udp)
+			- --dport destination_port_number
+			- --sport source_port_number
+		- -s source_address_or_range
+		- -d destination_address_or_range
+		
+	TARGET DROP,ACCEPT,REJECT,RETURN -> Go back to the calling chain, or default policy of built in chain
+	
+Letting SSH Communications Through:
+	iptables -A INPUT -s 0/0 -p tcp --dport 22 -j ACCEPT 
+	
+	Lets all SSH Packets in to the system, from any source address. 0/0 shorthand for any address
+	
+Firewall Design Technique
+	Only "syn" packets get tested, but allow all other related packets.
+
+Change our SSH Rule:
+	iptables -A INPUT -s 0/0 -p tcp --dport 22 --syn -j ACCEPT
+
+-m match_extension
+	state - see how packets are related to already present connections
+		--state options
+		- NEW -> A packet which creates a new connections
+		- ESTABLISHED -> A packet which belongs to an already established connection
+		- RELATED -> A packet that is related to an already established communcation
+		- INVALID -> An unidentified packet
+		
+Allow related and established packets through:
+
+iptables -A INPUT -s 0/0 -m state --state RELATED,ESTABLISHED -j ACCEPT 
+
+Clear out all the previous rules:
+	iptables -F 
+	
+Start putting things together in a bash script file.
+
+$ vim firewall.sh
+iptables -F #Flush all rules from all chains
+iptables -P INPUT DROP #Drop all packets not explicitly accepted
+
+#Accept packets that are part of communications already
+iptables -A INPUT -s 0/0 -m state --state RELATED,ESTABLISHED -j ACCEPT 
+
+#Accept syn packets from SSH
+iptables -A INPUT -s 0/0 -p tcp --syn --dport 22 -j ACCEPT 
+
+
+Example:
+
+# iptables -L
+Chain INPUT (policy ACCEPT)
+target 		prot opt source 		destination
+
+Chain FORWARD (policy ACCEPT)
+target 		prot opt source 		destination
+
+Chain OUTPUT (policy ACCEPT)
+target 		prot opt source			destination
+# vim firewall.sh
+iptables -F #Flush all rules from all chains
+iptables -P INPUT DROP #Drop all packets not explicitly accepted
+
+#Accept packets that are part of communications already
+iptables -A INPUT -s 0/0 -m state --state RELATED,ESTABLISHED -j ACCEPT 
+
+#Accept syn packets from SSH
+iptables -A INPUT -s 0/0 -p tcp --syn --dport 22 -j ACCEPT 
+#
+# sh firewall.sh
+# iptables -L
+Chain INPUT (policy DROP)
+target 		prot opt source 		destination
+ACCEPT		all -- anywhere			anywhere 		state RELATED,ESTABLISHED
+ACCEPT 		tcp -- anywhere			anywhere		tcp dpt:ssh flags:FIN,SYN,RST,ACK/SYN
+
+Chain FORWARD (policy ACCEPT)
+target 		prot opt source 		destination
+
+Chain OUTPUT (policy ACCEPT)
+target 		prot opt source			destination
+# 
+
+IPTables Firewall Rate Limiting
+	-m limit
+		--limit rate (1/s 10/s 5/h)
+		--limit-burst number
+			How many packets must come through before the limit goes into effect
+	
+iptables -A INPUT -p tcp --dport 22 --syn -m limit --limit 3/m \
+		--limit-burst 1 -j ACCEPT 
+		
+Concurrent Connection Limiting by IP
+	
+	-m connlimit
+		--connlimit-above (returns true if limit is exceeded -not false)
+		--connlimit-mask (specify subnet mask to count all ips on a subnet)
+		
+	iptables -A INPUT -m connlimit --connlimit-above 2 -j DROP
+	
+Keep Track of significate IPAddresses
+
+	-m recent 
+		--name name -> specify the name of the list to keep track of this ip 
+		--set -> add this ip to the named list
+		--rcheck -> check to see if this ip was in the list
+		--update -> check if in the list and update the entry 
+		--remove -> remove the ip from the list
+		--seconds number -> (w/ rcheck or update) true if the packet was seen within number of seconds
+		--hitcount number -> check if number of packets from this ip has been detected
+		--rttl -> check if the ip that was named has the same ttl(time to live) as the current packet
+		
+Create chains to organize your rules
+	iptables -N new_chain
+	
+Delete a Rule
+	iptables -D chain number_or_rule
+
+Delete custom empty chains
+	iptables -X
+
+Example: Separate out attempts to connect too many times on SSH
+
+iptables -F #Flush all rules from all chains
+iptables -X #Delete any user added chains 
+iptables -P INPUT DROP #Drop all packets not explicitly accepted
+
+#Accept packets that are part of communications already
+iptables -A INPUT -s 0/0 -m state --state RELATED,ESTABLISHED -j ACCEPT 
+
+iptables -N ssh_traffic_init
+iptables -A INPUT -s 0/0 -p tcp --dport 22 --syn -j ssh_traffic_init
+iptables -A ssh_traffic_init -m recent --name ssh_input_trap --rcheck --seconds 60 --hitcount 3 --rttl -j DROP
+iptables -A ssh_traffic_init -m recent --name ssh_input_trap --set -j RETURN
+
+iptables -N ssh_traffic_throttle
+iptables -A INPUT -s 0/0 -p tcp --dport 22 --syn -j ssh_traffic_throttle
+iptables -A ssh_traffic_throttle -m connlimit --connlimit-above 3 -j DROP
+iptables -A ssh_traffic_throttle -m limit --limit 3/m --limit-burst 1 -j ACCEPT 
+
+# vim firewall.sh
+# sh firewall.sh
+# iptables -L 
+Chain INPUT (policy DROP)
+target 		prot opt source 		destination
+ACCEPT		all -- anywhere			anywhere 		state RELATED,ESTABLISHED
+ssh_traffic_init	tcp -- anywhere			anywhere		tcp dpt:ssh flags:FIN,SYN,RST,ACK/SYN
+ssh_traffic_throttle	tcp -- anywhere			anywhere		tcp dpt:ssh flags:FIN,SYN,RST,ACK/SYN
+
+Chain FORWARD (policy ACCEPT)
+target 		prot opt source 		destination
+
+Chain OUTPUT (policy ACCEPT)
+target 		prot opt source			destination
+
+Chain ssh_traffic_init (1 references)
+target 		prot opt source 		destination
+DROP		all -- anywhere			anywhere 		recent: CHECK seconds: 60 hit_count: 3 TTL-Match name: ssh_input_trap side: source mask:
+ 255.255.255.255
+RETURN 		all -- anywhere			anywhere		recent: SET name: ssh_input_trap side: source mask: 255.255.255.255
+
+Chain ssh_traffic_throttle (1 references)
+target 		prot opt source 		destination
+DROP 		all -- anywhere			anywhere		#conn src/32 >3
+ACCEPT 		all -- anywhere			anywhere		limit: avg 3/min burst 1
+#
+
+Checking up on your Firewall:
+
+	iptables -L -v 
+		-> Verbose: list our how many packets have matched the rule.
+		
+Resetting the packet counters:
+	
+	iptables -Z
+	
+Combine and do both:
+
+	iptables -L -v -Z 
+	
+# iptables -L -v 
+Chain INPUT (policy DROP 1 packets, 60 bytes)
+ pkts bytes target 		prot opt source 		destination
+   71  4976 ACCEPT		all -- anywhere			anywhere 		state RELATED,ESTABLISHED
+    0     0 ssh_traffic_init	tcp -- anywhere			anywhere		tcp dpt:ssh flags:FIN,SYN,RST,ACK/SYN
+    0     0 ssh_traffic_throttle	tcp -- anywhere			anywhere		tcp dpt:ssh flags:FIN,SYN,RST,ACK/SYN
+
+Chain FORWARD (policy ACCEPT)
+ pkts bytes target 		prot opt source 		destination
+
+Chain OUTPUT (policy ACCEPT)
+ pkts bytes target 		prot opt source			destination
+
+Chain ssh_traffic_init (1 references)
+ pkts bytes target 		prot opt source 		destination
+    0     0 DROP		all -- anywhere			anywhere 		recent: CHECK seconds: 60 hit_count: 3 TTL-Match name: ssh_input_trap side: source mask:
+ 255.255.255.255
+    0     0 RETURN 		all -- anywhere			anywhere		recent: SET name: ssh_input_trap side: source mask: 255.255.255.255
+
+Chain ssh_traffic_throttle (1 references)
+ pkts bytes target 		prot opt source 		destination
+    0	  0 DROP 		all -- anywhere			anywhere		#conn src/32 >3
+    0     0 ACCEPT 		all -- anywhere			anywhere		limit: avg 3/min burst 1
+# iptables -Z 
+# iptables -L -v 
+Chain INPUT (policy DROP 1 packets, 60 bytes)
+ pkts bytes target 		prot opt source 		destination
+    7   504 ACCEPT		all -- anywhere			anywhere 		state RELATED,ESTABLISHED
+    0     0 ssh_traffic_init	tcp -- anywhere			anywhere		tcp dpt:ssh flags:FIN,SYN,RST,ACK/SYN
+    0     0 ssh_traffic_throttle	tcp -- anywhere			anywhere		tcp dpt:ssh flags:FIN,SYN,RST,ACK/SYN
+
+Chain FORWARD (policy ACCEPT)
+ pkts bytes target 		prot opt source 		destination
+
+Chain OUTPUT (policy ACCEPT)
+ pkts bytes target 		prot opt source			destination
+
+Chain ssh_traffic_init (1 references)
+ pkts bytes target 		prot opt source 		destination
+    0     0 DROP		all -- anywhere			anywhere 		recent: CHECK seconds: 60 hit_count: 3 TTL-Match name: ssh_input_trap side: source mask:
+ 255.255.255.255
+    0     0 RETURN 		all -- anywhere			anywhere		recent: SET name: ssh_input_trap side: source mask: 255.255.255.255
+
+Chain ssh_traffic_throttle (1 references)
+ pkts bytes target 		prot opt source 		destination
+    0	  0 DROP 		all -- anywhere			anywhere		#conn src/32 >3
+    0     0 ACCEPT 		all -- anywhere			anywhere		limit: avg 3/min burst 1
+# iptables -L -v -Z 
+Chain INPUT (policy DROP 1 packets, 60 bytes)
+ pkts bytes target 		prot opt source 		destination
+   18  1272 ACCEPT		all -- anywhere			anywhere 		state RELATED,ESTABLISHED
+    0     0 ssh_traffic_init	tcp -- anywhere			anywhere		tcp dpt:ssh flags:FIN,SYN,RST,ACK/SYN
+    0     0 ssh_traffic_throttle	tcp -- anywhere			anywhere		tcp dpt:ssh flags:FIN,SYN,RST,ACK/SYN
+
+Chain FORWARD (policy ACCEPT)
+ pkts bytes target 		prot opt source 		destination
+
+Chain OUTPUT (policy ACCEPT)
+ pkts bytes target 		prot opt source			destination
+
+Chain ssh_traffic_init (1 references)
+ pkts bytes target 		prot opt source 		destination
+    0     0 DROP		all -- anywhere			anywhere 		recent: CHECK seconds: 60 hit_count: 3 TTL-Match name: ssh_input_trap side: source mask:
+ 255.255.255.255
+    0     0 RETURN 		all -- anywhere			anywhere		recent: SET name: ssh_input_trap side: source mask: 255.255.255.255
+
+Chain ssh_traffic_throttle (1 references)
+ pkts bytes target 		prot opt source 		destination
+    0	  0 DROP 		all -- anywhere			anywhere		#conn src/32 >3
+    0     0 ACCEPT 		all -- anywhere			anywhere		limit: avg 3/min burst 1
+Zeroing chain 'INPUT'
+Zeroing chain 'FORWARD'
+Zeroing chain 'OUTPUT'
+Zeroing chain 'ssh_traffic_init'
+Zeroing chain 'ssh_traffic_throttle'
+#
+
+Rules without Targets:
+
+	no -j switch
+	only counts the matches then passes packet to next rule
+	
+Logging: 
+
+	-j LOG 
+	recommended to use a limit extention
+
+Saving your Firewall with iptables in CentOS
+
+	first stop firewalld, if it is running 
+		systemctl stop firewalld 
+		systemctl mask firewalld
+	
+	install iptables-services
+		yum install iptables-services
+	
+	enable and start the service 
+		systemctl enable iptables-services
+		systemctl start iptables
+		
+	Save the state
+		service save iptables 
+		
+Saving your Firewall with iptables in Ubuntu
+	
+	apt-get install iptables-persistent
+	
+	iptables-save > /etc/iptables/rules.v4
+	
+IPv6?
+
+	There is a sister application ip6tables, which provides much of the same functionality.
+	
+	You can also save IPv6 firewalls with:
+		Ubuntu
+			ip6tables-save > /etc/iptables/rules.v6
+		CentOS
+			service ip6tables save 
+	
+-----------------------------------------------------------------------------------------------------------------------------------------	
+
+LINUX BOOT PROCESS 
+
+1. BIOS
+
+    BIOS stands for Basic Input/Output System
+    Performs some system integrity checks
+    Searches, loads, and executes the boot loader program.
+    It looks for boot loader in floppy, cd-rom, or hard drive. You can press a key (typically F12 of F2, but it depends on your system) during the BIOS startup to change the boot sequence.
+    Once the boot loader program is detected and loaded into the memory, BIOS gives the control to it.
+    So, in simple terms BIOS loads and executes the MBR boot loader.
+
+2. MBR
+
+    MBR stands for Master Boot Record.
+    It is located in the 1st sector of the bootable disk. Typically /dev/hda, or /dev/sda
+    MBR is less than 512 bytes in size. This has three components 1) primary boot loader info in 1st 446 bytes 2) partition table info in next 64 bytes 3) mbr validation check in last 2 bytes.
+    It contains information about GRUB (or LILO in old systems).
+    So, in simple terms MBR loads and executes the GRUB boot loader.
+
+3. GRUB
+
+    GRUB stands for Grand Unified Bootloader.
+    If you have multiple kernel images installed on your system, you can choose which one to be executed.
+    GRUB displays a splash screen, waits for few seconds, if you don’t enter anything, it loads the default kernel image as specified in the grub configuration file.
+    GRUB has the knowledge of the filesystem (the older Linux loader LILO didn’t understand filesystem).
+    Grub configuration file is /boot/grub/grub.conf (/etc/grub.conf is a link to this). The following is sample grub.conf of CentOS.
+
+    #boot=/dev/sda
+    default=0
+    timeout=5
+    splashimage=(hd0,0)/boot/grub/splash.xpm.gz
+    hiddenmenu
+    title CentOS (2.6.18-194.el5PAE)
+              root (hd0,0)
+              kernel /boot/vmlinuz-2.6.18-194.el5PAE ro root=LABEL=/
+              initrd /boot/initrd-2.6.18-194.el5PAE.img
+
+    As you notice from the above info, it contains kernel and initrd image.
+    So, in simple terms GRUB just loads and executes Kernel and initrd images.
+
+4. Kernel
+
+    Mounts the root file system as specified in the “root=” in grub.conf
+    Kernel executes the /sbin/init program
+    Since init was the 1st program to be executed by Linux Kernel, it has the process id (PID) of 1. Do a ‘ps -ef | grep init’ and check the pid.
+    initrd stands for Initial RAM Disk.
+    initrd is used by kernel as temporary root file system until kernel is booted and the real root file system is mounted. It also contains necessary drivers compiled inside, which helps it to access the hard drive partitions, and other hardware.
+
+5. Init
+
+    Looks at the /etc/inittab file to decide the Linux run level.
+    Following are the available run levels
+        0 – halt
+        1 – Single user mode
+        2 – Multiuser, without NFS
+        3 – Full multiuser mode
+        4 – unused
+        5 – X11
+        6 – reboot
+    Init identifies the default initlevel from /etc/inittab and uses that to load all appropriate program.
+    Execute ‘grep initdefault /etc/inittab’ on your system to identify the default run level
+    If you want to get into trouble, you can set the default run level to 0 or 6. Since you know what 0 and 6 means, probably you might not do that.
+    Typically you would set the default run level to either 3 or 5.
+
+6. Runlevel programs
+
+    When the Linux system is booting up, you might see various services getting started. For example, it might say “starting sendmail …. OK”. Those are the runlevel programs, executed from the run level directory as defined by your run level.
+    Depending on your default init level setting, the system will execute the programs from one of the following directories.
+        Run level 0 – /etc/rc.d/rc0.d/
+        Run level 1 – /etc/rc.d/rc1.d/
+        Run level 2 – /etc/rc.d/rc2.d/
+        Run level 3 – /etc/rc.d/rc3.d/
+        Run level 4 – /etc/rc.d/rc4.d/
+        Run level 5 – /etc/rc.d/rc5.d/
+        Run level 6 – /etc/rc.d/rc6.d/
+    Please note that there are also symbolic links available for these directory under /etc directly. So, /etc/rc0.d is linked to /etc/rc.d/rc0.d.
+    Under the /etc/rc.d/rc*.d/ directories, you would see programs that start with S and K.
+    Programs starts with S are used during startup. S for startup.
+    Programs starts with K are used during shutdown. K for kill.
+    There are numbers right next to S and K in the program names. Those are the sequence number in which the programs should be started or killed.
+    For example, S12syslog is to start the syslog deamon, which has the sequence number of 12. S80sendmail is to start the sendmail daemon, which has the sequence number of 80. So, syslog program will be started before sendmail.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

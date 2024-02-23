@@ -1,0 +1,33 @@
+DNS- Domain Name System:
+-Resolves domain names to IP addresses.
+
+1. A domain name is entered into a web browser.
+2. The browser asks the ISP's DNS server to resolve the request.
+3. If the ISP's DNS can't resolve the domain name it asks a root server.
+4. If the root server does not know it will ask another name server that knows about ".com" domains.
+5. The server answers the request with the IP address. ---it is marked as authoritative
+6. The ISP's DNS responds to the web browser with the IP address.
+7. The query is then cached for ... 24 hours?
+13 root servers are run by ICANN-> US company
+
+
+
+
+
+DHCP- Dynamic Host Configuration Protocol
+-Automatically assigns IP configurations to hosts on a network.
+
+DHCPDISCOVER->DHCPOFFER->DHCPREQUEST->DHCPACK
+Initializing-> Selecting-> Requesting-> Binding-> Renewing->Rebinding
+1. A client issues a DHCP DISCOVER msg via a Broadcast.(255.255.255.255)
+2. The DHCP server receives the msg, and replies with a DHCP OFFER as a broadcast... msg w/the clients MAC.
+3. Once the client receives the DHCP OFFER, it sends a DHCP REQUEST msg to the server which accepts the network configuration.
+4. The DHCP server sends a DHCP ACK msg to acknowledge the DHCP REQUEST.
+5. The client then uses the network configuration and is on the network.
+
+
+
+
+ARP- Address Resolution Protocol
+-Determines the MAC address of a host when only the IP addresses is known.
+

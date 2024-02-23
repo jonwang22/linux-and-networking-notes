@@ -1,0 +1,123 @@
+Linux Commands
+
+
+ls - lists files and directories in current directory
+	Syntax = ls
+
+more - views content of a file
+	Syntax = more (filename)
+
+mkdir - create a new directory within current directory
+	Syntax = mkdir (directory name)
+
+mv - moves files into directory or renames files or renames directories
+	Syntax = mv (filename) (directory) OR
+		 mv (filename/directory) (filename1/directory1)
+
+cd - changes directories
+	Syntax = cd (directory)
+
+pwd - print working directory, shows current location
+	Syntax = pwd
+
+Linux can use pathnames with the commands as well, for example
+	mv /animals/cats/tigers /animals/cats/siberians OR
+	mv cats/tigers cats/siberians OR
+	mv ../cats/tigers ../cats/siberians
+
+cp - copy command, can copy files
+	Syntax = cp (filename) (new filename)
+
+rm - remove a file
+	Syntax = rm (filename)
+
+rmdir - remove a directory
+	Syntax = rmdir (directory)
+
+ls -l - this is used with secure files. All options start with a hyphen,
+	this command executes ls with long listing option (-l)
+	Syntax = ls -l
+
+chmod - lets you change the permissions for certain secure files. Files are split into
+	3 groups where its User,Group,Other with rwx as the access levels for each file
+	rwx is readable, writeable, executable.
+
+	Secure files look like this after using "ls -l" cmd:
+
+	zoo:primates> ls -l
+	-rw-r--r-- keeper prim 547 9:31 chimps
+	-rw-r--r-- keeper prim 983 9:32 gorillas
+	-rw-r--r-- keeper prim 485 9:34 sq_monks
+        ^    ^	     ^	   ^	^   ^	   ^	
+	|    |	     | 	   |	|   |	   |
+	|    |	     |	   |	|   |      |
+	|    |	     |	   |   size |      |
+	|    |	   owner   |        |	file name
+       type  |	  (user)   |	    |
+             |		 group	    |
+             |			 last mod
+          security
+
+
+
+	For "chmod" to add permissions it would be "+" to remove permissions it would
+	be "-"
+	
+	Syntax = chmod ('u','g',and/or'o') +/- ('r','w',and/or'x')
+	example = chmod u+rwx OR chmod ugo-rwx OR chmod ugo+rwx
+
+
+Wildcards - allows you to specify more than one file at the same time
+	    '*' matches any number of characters. '?' isn't used very often, it
+	    matches exactly one character.
+	Syntax = tron> ls *
+		 ing    sing    spat    sport    tennis
+		 tron> ls *ing
+		 ing    sing
+		 tron> ls sp??t
+		 sport
+
+groups - lists group memberships within the linux server
+	Syntax = groups
+
+sort - allows you to sort for certain things
+	Syntax = sort /sys/block/sd*/device/model |uniq -c (use this for finding same model)
+
+~ - is a tilde this refers to the home directory, its in place of /home/keeper or
+    whatever the home directory is. It's also used for finding home directory for
+    other users. Anything after '~' aside from '/', Linux assumes its a username
+	Syntax = cp ~/jokes /tmp (copying jokes from home directory to /tmp)
+		 cd ~(username)
+		 '~' by itself is a short form of "~(usr)"
+		 
+man - opens manual for Linux
+	Syntax = man ls (opens manual pages describing 'ls')
+
+Description for the different parts of a "man" page
+
+
+______________________________________________________________________________
+man(1)                    User Commands                   man(1)
+
+NAME
+  man - format and display the on-line manual pages
+
+SYNOPSIS
+  man [-k] keyword ...
+
+DESCRIPTION
+  The man command either prints portions of the
+  online manual or searches for manual entries having
+  the specified keywords associated with them.
+
+OPTIONS
+  -k   searches for man page descriptions containing           
+         specified keywords.
+
+SEE ALSO
+   apropos(1), whatis(1), less(1), groff(1)
+
+______________________________________________________________________________
+
+
+
